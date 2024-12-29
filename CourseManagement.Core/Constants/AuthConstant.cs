@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CourseManagement.Core.Constants
 {
-    public class AuthorizationConstant
+    public class AuthConstant
     {
         public enum Roles
         {
@@ -16,6 +16,8 @@ namespace CourseManagement.Core.Constants
         public const string default_username = "student";
         public const string default_email = "student@student.com";
         public const string default_password = "Pa$$w0rd.";
+        public const string default_first_name = "FirstName";
+        public const string default_last_name = "LastName";
         public const Roles default_role = Roles.Student;
     }
 }

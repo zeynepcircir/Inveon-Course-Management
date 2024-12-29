@@ -19,4 +19,9 @@
     <ProjectReference Include="..\CourseManagement.Service\CourseManagement.Service.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Filters\" />
+    <Folder Include="Middlewares\" />
+  </ItemGroup>
+
 </Project>

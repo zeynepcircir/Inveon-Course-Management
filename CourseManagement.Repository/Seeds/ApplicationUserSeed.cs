@@ -17,31 +17,33 @@ namespace CourseManagement.Repository.Seeds
 
         public async Task SeedAsync()
         {
-            if (!await _roleManager.RoleExistsAsync(AuthorizationConstant.Roles.Student.ToString()))
+            if (!await _roleManager.RoleExistsAsync(AuthConstant.Roles.Student.ToString()))
             {
-                await _roleManager.CreateAsync(new IdentityRole(AuthorizationConstant.Roles.Student.ToString()));
+                await _roleManager.CreateAsync(new IdentityRole(AuthConstant.Roles.Student.ToString()));
             }
 
-            if (!await _roleManager.RoleExistsAsync(AuthorizationConstant.Roles.Instructor.ToString()))
+            if (!await _roleManager.RoleExistsAsync(AuthConstant.Roles.Instructor.ToString()))
             {
-                await _roleManager.CreateAsync(new IdentityRole(AuthorizationConstant.Roles.Instructor.ToString()));
+                await _roleManager.CreateAsync(new IdentityRole(AuthConstant.Roles.Instructor.ToString()));
             }
 
-            var existingUser = await _userManager.FindByEmailAsync(AuthorizationConstant.default_email);
+            var existingUser = await _userManager.FindByEmailAsync(AuthConstant.default_email);
             if (existingUser == null)
             {
                 var defaultUser = new ApplicationUser
                 {
-                    UserName = AuthorizationConstant.default_username,
-                    Email = AuthorizationConstant.default_email,
+                    UserName = AuthConstant.default_username,
+                    Email = AuthConstant.default_email,
+                    FirstName = AuthConstant.default_first_name,
+                    LastName = AuthConstant.default_last_name,
                     EmailConfirmed = true,
                     PhoneNumberConfirmed = true,
                 };
 
-                var result = await _userManager.CreateAsync(defaultUser, AuthorizationConstant.default_password);
+                var result = await _userManager.CreateAsync(defaultUser, AuthConstant.default_password);
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(defaultUser, AuthorizationConstant.default_role.ToString());
+                    await _userManager.AddToRoleAsync(defaultUser, AuthConstant.default_role.ToString());
                 }
             }
         }
