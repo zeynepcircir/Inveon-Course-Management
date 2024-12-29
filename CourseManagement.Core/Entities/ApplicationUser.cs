@@ -1,10 +1,9 @@
-﻿//using CourseManagement.Core.Enums;
-//using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 
-//namespace CourseManagement.Core.Entities
-//{
-//    public class ApplicationUser : IdentityUser
-//    {
-//        public string? City { get; set; }
-//    }
-//}
+namespace CourseManagement.Core.Entities
+{
+    public class ApplicationUser : IdentityUser
+    {
+        public string? City { get; set; }
+    }
+}

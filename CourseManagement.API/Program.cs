@@ -7,6 +7,9 @@ using CourseManagement.Core.UnitOfWorks;
 using CourseManagement.Repository.UnitOfWorks;
 using CourseManagement.Service.Mapping;
 using CourseManagement.Repository.Contexts;
+using CourseManagement.Core.Entities;
+using Microsoft.AspNetCore.Identity;
+using CourseManagement.Repository.Seeds;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +17,13 @@ builder.Services.AddControllers();
 
 // DbContexts
 builder.Services.AddDbContext<CourseManagementDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+    );
+
+// Identity
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<CourseManagementDbContext>()
+    .AddDefaultTokenProviders();
 
 // Repositories
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
@@ -37,6 +46,17 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+    var dbSeeder = new ApplicationUserSeed(userManager, roleManager);
+    await dbSeeder.SeedAsync();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

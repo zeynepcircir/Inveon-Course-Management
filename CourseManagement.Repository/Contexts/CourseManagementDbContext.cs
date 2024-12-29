@@ -1,10 +1,11 @@
 ﻿using CourseManagement.Core.Entities;
 using CourseManagement.Repository.Configurations;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace CourseManagement.Repository.Contexts
 {
-    public class CourseManagementDbContext : DbContext
+    public class CourseManagementDbContext : IdentityDbContext<ApplicationUser>
     {
         public CourseManagementDbContext(DbContextOptions<CourseManagementDbContext> options) : base(options)
         {
