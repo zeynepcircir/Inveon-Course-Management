@@ -1,84 +1,112 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
-import { Container, Row, Col, Card, CardBody, CardText, Button, Badge } from 'reactstrap';
+import React, { useState } from 'react';
+import {
+  Container,
+  Row,
+  Col,
+  ListGroup,
+  ListGroupItem,
+  Alert,
+  Button,
+} from 'reactstrap';
+import { useParams, useNavigate } from 'react-router-dom';
 
-// Mock veri (gerçek veri backend'den API ile alınacak)
-const courses = [
-  {
-    id: 1,
-    title: 'Cinematic Techniques',
-    category: 'Filming',
-    price: 'Free',
-    chapters: 4,
-    description: 'Learn the best cinematic techniques to make your videos look professional.',
-    image: 'https://via.placeholder.com/150',
-    content: ['Introduction', 'Lighting Basics', 'Camera Angles', 'Advanced Techniques'],
-  },
-  {
-    id: 2,
-    title: 'Introduction to Filming',
-    category: 'Filming',
-    price: '$20',
-    chapters: 2,
-    description: 'A beginner-friendly course to get started with filming and video production.',
-    image: 'https://via.placeholder.com/150',
-    content: ['Overview', 'Getting Started'],
-  },
-  {
-    id: 3,
-    title: 'Structural Design Principles',
-    category: 'Engineering',
-    price: '$15',
-    chapters: 10,
-    description: 'Master the principles of structural design and engineering fundamentals.',
-    image: 'https://via.placeholder.com/150',
-    content: ['Introduction', 'Load Analysis', 'Design Methods', 'Case Studies'],
-  },
-];
+const CourseDetail = () => {
+  const { courseId } = useParams();
+  const navigate = useNavigate();
 
-const CourseDetailPage = () => {
-  const { id } = useParams(); // URL'den kurs ID'sini alıyoruz
-  const course = courses.find((c) => c.id === parseInt(id)); // Mock veriden kursu buluyoruz
+  const [isPurchased, setIsPurchased] = useState(false); // Kurs satın alınmış mı kontrolü
+  const chapters = [
+    { id: 1, title: 'Introduction', duration: '01:05', isLocked: false },
+    { id: 2, title: 'Deep Dive', duration: '03:15', isLocked: true },
+    { id: 3, title: 'Exploring the Basics', duration: '02:45', isLocked: true },
+    { id: 4, title: 'Outro', duration: '00:45', isLocked: true },
+  ];
 
-  if (!course) {
-    return (
-      <Container className="py-5 text-center">
-        <h1>Course not found!</h1>
-        <p>It seems this course does not exist or has been removed.</p>
-      </Container>
-    );
-  }
+  const handlePurchase = () => {
+    navigate('/payment', { state: { courseId, price: 15.0 } }); // Payment sayfasına yönlendir
+  };
+  
+
+  const handleVideoClick = (chapter) => {
+    if (!isPurchased && chapter.isLocked) {
+      alert('Bu bölümü izlemek için kursu satın almanız gerekiyor.');
+    } else {
+      alert(`${chapter.title} oynatılıyor...`);
+    }
+  };
 
   return (
     <Container className="py-5">
       <Row>
-        <Col md={6}>
-          <img src={course.image} alt={course.title} className="img-fluid rounded" />
-        </Col>
-        <Col md={6}>
-          <h1>{course.title}</h1>
-          <Badge color="primary" className="mb-3">
-            {course.category}
-          </Badge>
-          <p>{course.description}</p>
-          <h4>Price: {course.price}</h4>
-          <Button color="success" className="mt-3">
-            Enroll Now
-          </Button>
-        </Col>
-      </Row>
-      <Row className="mt-5">
-        <Col>
-          <h3>Course Content</h3>
-          <ul>
-            {course.content.map((item, index) => (
-              <li key={index}>{item}</li>
+        <Col md={4}>
+          <h4>Course Chapters</h4>
+          <ListGroup>
+            {chapters.map((chapter, index) => (
+              <ListGroupItem
+                key={chapter.id}
+                className="d-flex justify-content-between align-items-center"
+                onClick={() => handleVideoClick(chapter)}
+                style={{
+                  cursor: 'pointer',
+                  opacity: chapter.isLocked && !isPurchased ? 0.5 : 1,
+                }}
+              >
+                {chapter.isLocked && !isPurchased ? (
+                  <>
+                    <span>{chapter.title}</span>
+                    <i className="bi bi-lock-fill text-secondary"></i>
+                  </>
+                ) : (
+                  <span>{chapter.title}</span>
+                )}
+                <small>{chapter.duration}</small>
+              </ListGroupItem>
             ))}
-          </ul>
+          </ListGroup>
+        </Col>
+        <Col md={8}>
+          {isPurchased ? (
+            <div>
+              <video
+                controls
+                width="100%"
+                style={{ maxHeight: '400px', background: '#000' }}
+              >
+                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          ) : (
+            <div className="text-center">
+              <Alert color="warning" className="my-3">
+                You need to purchase this course to watch locked chapters.
+              </Alert>
+              <div
+                className="d-flex justify-content-center align-items-center"
+                style={{
+                  height: '300px',
+                  background: '#f8f9fa',
+                  border: '1px solid #ddd',
+                  borderRadius: '5px',
+                }}
+              >
+                <i className="bi bi-lock-fill" style={{ fontSize: '3rem', color: '#aaa' }}></i>
+                <p className="ms-3 text-muted">This chapter is locked</p>
+              </div>
+              <Button
+                color="success"
+                size="lg"
+                className="mt-4"
+                onClick={handlePurchase}
+              >
+                Enroll for $15.00
+              </Button>
+            </div>
+          )}
         </Col>
       </Row>
     </Container>
   );
 };
 
-export default CourseDetailPage;
+export default CourseDetail;

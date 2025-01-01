@@ -41,19 +41,9 @@ body {
   font-family: 'Arial', sans-serif;
 }
 
-.card {
-  border-radius: 10px;
-}
-
-.card .bg-primary {
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
-  text-align: center;
+.app-container {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  height: 100vh;
+  overflow: hidden;
 }
 
-.card-body {
-  padding: 2rem;
-}

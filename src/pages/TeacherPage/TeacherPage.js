@@ -1,67 +1,139 @@
-import React from 'react';
-import { Container, Button, Table } from 'reactstrap';
+import React, { useState } from 'react';
+import {
+  Container,
+  Button,
+  Table,
+  Input,
+  Pagination,
+  PaginationItem,
+  PaginationLink
+} from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 import alertify from 'alertifyjs';
-
-// Mock veri (backend ile değiştirilebilir)
-const courses = [
-  { id: 1, title: 'Cinematic Techniques', category: 'Filming', price: 'Free' },
-  { id: 2, title: 'Introduction to Filming', category: 'Filming', price: '$20' },
-  { id: 3, title: 'Structural Design Principles', category: 'Engineering', price: '$15' },
-];
+import courses from '../../data/courses'; // Veriyi courses.js'den al
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const TeacherPage = () => {
   const navigate = useNavigate();
 
+  const [filteredCourses, setFilteredCourses] = useState(courses); // Filtrelenmiş kurslar
+  const [sortConfig, setSortConfig] = useState({ key: '', direction: 'asc' });
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5; // Her sayfada gösterilecek eleman sayısı
+
+  // Edit işlemi
   const handleEdit = (id) => {
     navigate(`/teacher/edit/${id}`);
   };
 
+  // Delete işlemi
   const handleDelete = (id) => {
-    alertify.confirm(
-      'Delete Course',
-      `Are you sure you want to delete the course with ID: ${id}?`,
-      () => {
-        alertify.success('Course deleted successfully!');
-        // Backend'de silme işlemi yapılabilir
-      },
-      () => {
-        alertify.error('Delete operation canceled.');
-      }
-    ).set('labels', { ok: 'Yes', cancel: 'No' }).set('movable', false).set('position', 'top-right');
+    alertify
+      .confirm(
+        'Delete Course',
+        `Are you sure you want to delete the course with ID: ${id}?`,
+        () => {
+          alertify.success('Course deleted successfully!');
+        },
+        () => {
+          alertify.error('Delete operation canceled.');
+        }
+      )
+      .set('labels', { ok: 'Yes', cancel: 'No' })
+      .set('movable', false)
+      .set('position', 'top-right');
   };
 
+  // Add New Course
   const handleAddCourse = () => {
     navigate('/teacher/add');
   };
 
+  // Filtreleme
+  const handleFilter = (key, value) => {
+    const filtered = courses.filter((course) =>
+      course[key].toLowerCase().includes(value.toLowerCase())
+    );
+    setFilteredCourses(filtered);
+    setCurrentPage(1); // Filtrelemeden sonra ilk sayfaya dön
+  };
+
+  // Sıralama
+  const handleSort = (key) => {
+    let direction = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    const sortedCourses = [...filteredCourses].sort((a, b) => {
+      if (a[key] < b[key]) return direction === 'asc' ? -1 : 1;
+      if (a[key] > b[key]) return direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+    setFilteredCourses(sortedCourses);
+    setSortConfig({ key, direction });
+  };
+
+  // Sayfalama
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentPageData = filteredCourses.slice(startIndex, startIndex + itemsPerPage);
+  const totalPages = Math.ceil(filteredCourses.length / itemsPerPage);
+
+  // Sayfa değişiminde işlem
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    window.scrollTo(0, 0); // Sayfa değişiminde yukarı kaydır
+  };
+
+  // Sıralama Okları
+  const getSortIcon = (key) => {
+    if (sortConfig.key === key) {
+      return sortConfig.direction === 'asc' ? '▲' : '▼';
+    }
+    return '▲'; // Varsayılan sıralama yukarı
+  };
+
   return (
     <Container className="py-5">
-      <h1 className="text-center mb-5">Manage Your Courses</h1>
       <Button color="success" className="mb-4" onClick={handleAddCourse}>
         Add New Course
       </Button>
-      <Table bordered hover>
+      <div className="mb-3 d-flex gap-3">
+        <Input
+          placeholder="Filter by title"
+          onChange={(e) => handleFilter('title', e.target.value)}
+        />
+        <Input
+          placeholder="Filter by category"
+          onChange={(e) => handleFilter('category', e.target.value)}
+        />
+      </div>
+      <Table bordered hover className="table bg-white rounded">
         <thead>
           <tr>
             <th>#</th>
-            <th>Title</th>
-            <th>Category</th>
-            <th>Price</th>
+            <th onClick={() => handleSort('title')} style={{ cursor: 'pointer' }}>
+              Title {getSortIcon('title')}
+            </th>
+            <th onClick={() => handleSort('category')} style={{ cursor: 'pointer' }}>
+              Category {getSortIcon('category')}
+            </th>
+            <th onClick={() => handleSort('price')} style={{ cursor: 'pointer' }}>
+              Price {getSortIcon('price')}
+            </th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {courses.map((course, index) => (
+          {currentPageData.map((course, index) => (
             <tr key={course.id}>
-              <th scope="row">{index + 1}</th>
+              <th scope="row">{startIndex + index + 1}</th>
               <td>{course.title}</td>
               <td>{course.category}</td>
               <td>{course.price}</td>
               <td>
-                <Button color="warning" size="sm" onClick={() => handleEdit(course.id)}>
+                <Button color="warning" size="sm" className="me-2" onClick={() => handleEdit(course.id)}>
                   Edit
-                </Button>{' '}
+                </Button>
                 <Button color="danger" size="sm" onClick={() => handleDelete(course.id)}>
                   Delete
                 </Button>
@@ -70,6 +142,34 @@ const TeacherPage = () => {
           ))}
         </tbody>
       </Table>
+
+      {/* Pagination */}
+      <div className="mt-4 d-flex justify-content-center">
+        <Pagination>
+          <PaginationItem disabled={currentPage === 1}>
+            <PaginationLink
+              previous
+              onClick={() => handlePageChange(currentPage - 1)}
+            />
+          </PaginationItem>
+          {[...Array(totalPages)].map((_, index) => (
+            <PaginationItem
+              key={index}
+              active={currentPage === index + 1}
+            >
+              <PaginationLink onClick={() => handlePageChange(index + 1)}>
+                {index + 1}
+              </PaginationLink>
+            </PaginationItem>
+          ))}
+          <PaginationItem disabled={currentPage === totalPages}>
+            <PaginationLink
+              next
+              onClick={() => handlePageChange(currentPage + 1)}
+            />
+          </PaginationItem>
+        </Pagination>
+      </div>
     </Container>
   );
 };
