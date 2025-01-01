@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CourseManagement.Core.DTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -9,14 +10,10 @@ namespace CourseManagement.Core.Services
 {
     public interface IService<T> where T : class
     {
-        Task<T> GetByIdAsync(int id);
-        Task<IEnumerable<T>> GetAllAsync();
-        IQueryable<T> Where(Expression<Func<T, bool>> expression);
-        Task<bool> AnyAsync(Expression<Func<T, bool>> expression);
-        Task<T> AddAsync(T entity);
-        Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entities);
-        Task UpdateAsync(T entity);
-        Task RemoveAsync(T entity);
-        Task RemoveRangeAsync(IEnumerable<T> entities);
+        Task<ResponseDTO<List<TDto>>> GetAllAsync<TDto>() where TDto : class;
+        Task<ResponseDTO<TDto>> GetByIdAsync<TDto>(int id) where TDto : class;
+        Task<ResponseDTO<TDto>> AddAsync<TDto>(T entity) where TDto : class;
+        Task<ResponseDTO<NoDataDto>> UpdateAsync(T entity, int id);
+        Task<ResponseDTO<NoDataDto>> RemoveAsync(int id);
     }
 }

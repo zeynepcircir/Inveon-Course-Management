@@ -29,7 +29,6 @@ namespace CourseManagement.Repository.Repositories
         {
             return await _context.Instructors
                 .Include(x => x.Courses)
-                .Include(x => x.SocialMedias)
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 

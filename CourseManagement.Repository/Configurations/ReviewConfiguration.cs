@@ -1,11 +1,6 @@
 ﻿using CourseManagement.Core.Entities;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CourseManagement.Repository.Configurations
 {
@@ -23,13 +18,11 @@ namespace CourseManagement.Repository.Configurations
 
             builder.HasOne(x => x.Course)
                 .WithMany(x => x.Reviews)
-                .HasForeignKey(x => x.CourseId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasForeignKey(x => x.CourseId);
 
             builder.HasOne(x => x.Student)
                 .WithMany(x => x.Reviews)
-                .HasForeignKey(x => x.StudentId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasForeignKey(x => x.StudentId);
         }
     }
 }

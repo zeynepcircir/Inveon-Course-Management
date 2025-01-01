@@ -1,11 +1,6 @@
 ﻿using CourseManagement.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CourseManagement.Repository.Configurations
 {
@@ -15,23 +10,22 @@ namespace CourseManagement.Repository.Configurations
         {
             builder.HasKey(x => x.Id);
 
-            builder.Property(x => x.FirstName)
-                .IsRequired()
-                .HasMaxLength(50);
-
-            builder.Property(x => x.LastName)
-                .IsRequired()
-                .HasMaxLength(50);
-
-            builder.Property(x => x.Email)
-                .IsRequired()
-                .HasMaxLength(100);
-
             builder.Property(x => x.Biography)
                 .HasMaxLength(2000);
 
+            builder.Property(x => x.ProfilePictureUrl)
+                .HasMaxLength(500);
+
             builder.Property(x => x.Website)
                 .HasMaxLength(500);
+
+            builder.HasOne(x => x.User)
+                .WithOne()
+                .HasForeignKey<Instructor>(x => x.UserId);
+
+            builder.HasMany(x => x.Courses)
+                .WithOne(x => x.Instructor)
+                .HasForeignKey(x => x.InstructorId);
         }
     }
 }

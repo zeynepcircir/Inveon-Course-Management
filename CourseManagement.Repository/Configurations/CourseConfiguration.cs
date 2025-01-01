@@ -1,11 +1,6 @@
 ﻿using CourseManagement.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CourseManagement.Repository.Configurations
 {
@@ -32,7 +27,7 @@ namespace CourseManagement.Repository.Configurations
 
             builder.Property(x => x.Level)
                 .IsRequired()
-                .HasConversion<string>(); 
+                .HasConversion<string>();
 
             builder.Property(x => x.Language)
                 .IsRequired()
@@ -43,15 +38,13 @@ namespace CourseManagement.Repository.Configurations
 
             builder.HasOne(x => x.Instructor)
                 .WithMany(x => x.Courses)
-                .HasForeignKey(x => x.InstructorId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasForeignKey(x => x.InstructorId);
 
             builder.HasOne(x => x.Category)
                 .WithMany(x => x.Courses)
-                .HasForeignKey(x => x.CategoryId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasForeignKey(x => x.CategoryId);
 
-            builder.HasMany(x => x.Contents)
+            builder.HasMany(x => x.Chapters)
                 .WithOne(x => x.Course)
                 .HasForeignKey(x => x.CourseId);
 

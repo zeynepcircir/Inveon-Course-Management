@@ -15,24 +15,23 @@ namespace CourseManagement.Repository.Contexts
         public DbSet<Category> Categories { get; set; }
         public DbSet<Instructor> Instructors { get; set; }
         public DbSet<Student> Students { get; set; }
-        public DbSet<CourseContent> CourseContents { get; set; }
-        public DbSet<Lecture> Lectures { get; set; }
-        public DbSet<Resource> Resources { get; set; }
+        public DbSet<CourseChapter> CourseContents { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<StudentCourse> StudentCourses { get; set; }
-        public DbSet<SocialMedia> SocialMedias { get; set; }
+        public DbSet<Payment> Payments { get; set; }
+        public DbSet<CreditCard> CreditCards { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new CategoryConfiguration());
             modelBuilder.ApplyConfiguration(new CourseConfiguration());
-            modelBuilder.ApplyConfiguration(new CourseContentConfiguration());
+            modelBuilder.ApplyConfiguration(new CourseChapterConfiguration());
             modelBuilder.ApplyConfiguration(new InstructorConfiguration());
-            modelBuilder.ApplyConfiguration(new LectureConfiguration());
-            modelBuilder.ApplyConfiguration(new ResourceConfiguration());
             modelBuilder.ApplyConfiguration(new ReviewConfiguration());
             modelBuilder.ApplyConfiguration(new StudentConfiguration());
             modelBuilder.ApplyConfiguration(new StudentCourseConfiguration());
+            modelBuilder.ApplyConfiguration(new PaymentConfiguration());
+            modelBuilder.ApplyConfiguration(new CreditCardConfiguration());
 
             base.OnModelCreating(modelBuilder);
         }

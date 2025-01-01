@@ -23,7 +23,7 @@ namespace CourseManagement.Service.Services
             _jwt = jwt.Value;
         }
 
-        public async Task<RegisterResponseDTO> RegisterAsync(RegisterDTO model)
+        public async Task<ResponseDTO<RegisterResponseDTO>> RegisterAsync(RegisterDTO model)
         {
             ApplicationUser user = new ApplicationUser
             {
@@ -31,73 +31,70 @@ namespace CourseManagement.Service.Services
                 Email = model.Email,
                 FirstName = model.FirstName,
                 LastName = model.LastName,
-
             };
 
             ApplicationUser? existingEmail = await _userManager.FindByEmailAsync(model.Email);
             ApplicationUser? existingUsername = await _userManager.FindByNameAsync(model.UserName);
+
             if (existingEmail == null && existingUsername == null)
             {
                 IdentityResult result = await _userManager.CreateAsync(user, model.Password);
+
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(user, AuthConstant.Roles.Student.ToString());
-                    return new RegisterResponseDTO($"User Registered {user.UserName}", null);
+
+                    var successData = new RegisterResponseDTO($"User Registered {user.UserName}", null);
+                    return ResponseDTO<RegisterResponseDTO>.Success(successData, 201); // 201 Created
                 }
                 else
                 {
-                    List<string> errors = new List<string>();
-                    foreach (IdentityError error in result.Errors)
-                    {
-                        errors.Add(error.Description);
-                    }
-                    return new RegisterResponseDTO("An error occured.", errors);
+                    List<string> errors = result.Errors.Select(e => e.Description).ToList();
+                    var errorDto = new ErrorDTO(errors, true);
+                    return ResponseDTO<RegisterResponseDTO>.Fail(errorDto, 400); // 400 Bad Request
                 }
-                
             }
             else
             {
-                return new RegisterResponseDTO($"User {user.UserName} is already registered.", null);
+                string errorMessage = existingEmail != null
+                    ? $"Email {model.Email} is already registered."
+                    : $"Username {model.UserName} is already registered.";
+
+                var errorDto = new ErrorDTO(errorMessage, true);
+                return ResponseDTO<RegisterResponseDTO>.Fail(errorDto, 409); // 409 Conflict
             }
         }
 
-        public async Task<LoginResponseDTO> LoginAsync(LoginDTO model)
+        public async Task<ResponseDTO<LoginResponseDTO>> LoginAsync(LoginDTO model)
         {
-            LoginResponseDTO authenticationModel;
             var user = await _userManager.FindByEmailAsync(model.Email);
 
             if (user == null)
             {
-                return new LoginResponseDTO {
-                    IsAuthenticated = false, Message = $"No Accounts Registered with {model.Email}." 
-                };
+                var errorDto = new ErrorDTO($"No accounts registered with {model.Email}.", true);
+                return ResponseDTO<LoginResponseDTO>.Fail(errorDto, 404); // 404 Not Found
             }
 
             if (await _userManager.CheckPasswordAsync(user, model.Password))
             {
                 JwtSecurityToken jwtSecurityToken = await CreateJwtToken(user);
 
-                authenticationModel = new LoginResponseDTO
+                var authenticationModel = new LoginResponseDTO
                 {
                     IsAuthenticated = true,
-                    Message = jwtSecurityToken.ToString(),
                     UserName = user.UserName,
                     Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
                     Email = user.Email,
+                    Roles = (await _userManager.GetRolesAsync(user)).ToList()
                 };
-                IList<string> rolesList = await _userManager.GetRolesAsync(user).ConfigureAwait(false);
-                authenticationModel.Roles = rolesList.ToList();
-                return authenticationModel;
+
+                return ResponseDTO<LoginResponseDTO>.Success(authenticationModel, 200); // 200 OK
             }
             else
             {
-                authenticationModel = new LoginResponseDTO()
-                {
-                    IsAuthenticated = false,
-                    Message = $"Incorrect Credentials for user {user.Email}."
-                };
+                var errorDto = new ErrorDTO($"Incorrect credentials for user {model.Email}.", true);
+                return ResponseDTO<LoginResponseDTO>.Fail(errorDto, 401); // 401 Unauthorized
             }
-            return authenticationModel;
         }
 
         private async Task<JwtSecurityToken> CreateJwtToken(ApplicationUser user)
@@ -131,6 +128,5 @@ namespace CourseManagement.Service.Services
             );
             return jwtSecurityToken;
         }
-
     }
 }

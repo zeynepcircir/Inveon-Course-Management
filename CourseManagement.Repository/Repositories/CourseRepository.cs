@@ -14,28 +14,6 @@ namespace CourseManagement.Repository.Repositories
             _context = context;
         }
 
-        public async Task<List<Course>> GetAllAsync()
-        {
-            return await _context.Courses
-                .Include(x => x.Instructor)
-                .Include(x => x.Category)
-                .ToListAsync();
-        }
-
-        public async Task<Course> GetByIdAsync(int id)
-        {
-            return await _context.Courses
-                .Include(x => x.Instructor)
-                .Include(x => x.Category)
-                .FirstOrDefaultAsync(x => x.Id == id);
-        }
-
-        public async Task<Course> AddAsync(Course entity)
-        {
-            await _context.Courses.AddAsync(entity);
-            return entity;
-        }
-
         public async Task<List<Course>> GetCoursesWithInstructorAsync()
         {
             return await _context.Courses
@@ -49,8 +27,7 @@ namespace CourseManagement.Repository.Repositories
             return await _context.Courses
                 .Include(x => x.Instructor)
                 .Include(x => x.Category)
-                .Include(x => x.Contents)
-                    .ThenInclude(x => x.Lectures)
+                .Include(x => x.Chapters)
                 .Include(x => x.Reviews)
                 .FirstOrDefaultAsync(x => x.Id == id);
         }

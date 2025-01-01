@@ -1,9 +1,9 @@
-﻿using CourseManagement.Core.Repositories;
+﻿using AutoMapper;
+using CourseManagement.Core.DTOs;
+using CourseManagement.Core.Repositories;
 using CourseManagement.Core.Services;
 using CourseManagement.Core.UnitOfWorks;
-using CourseManagement.Service.Exceptions;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 
 namespace CourseManagement.Service.Services
 {
@@ -11,68 +11,63 @@ namespace CourseManagement.Service.Services
     {
         private readonly IGenericRepository<T> _repository;
         private readonly IUnitOfWork _unitOfWork;
-        public Service(IGenericRepository<T> repository, IUnitOfWork unitOfWork)
+        private readonly IMapper _mapper;
+
+        public Service(IGenericRepository<T> repository, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _repository = repository;
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
-        public async Task<T> AddAsync(T entity)
+        public async Task<ResponseDTO<TDto>> AddAsync<TDto>(T entity) where TDto : class
         {
             await _repository.AddAsync(entity);
             await _unitOfWork.CommitAsync();
-            return entity;
+            TDto dto = _mapper.Map<TDto>(entity);
+            return ResponseDTO<TDto>.Success(dto, 200);
         }
 
-        public async Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entities)
+        public async Task<ResponseDTO<NoDataDto>> UpdateAsync(T entity, int id)
         {
-            await _repository.AddRangeAsync(entities);
-            await _unitOfWork.CommitAsync();
-            return entities;
-        }
-
-        public async Task<bool> AnyAsync(Expression<Func<T, bool>> expression)
-        {
-            return await _repository.AnyAsync(expression);
-        }
-
-        public async Task<IEnumerable<T>> GetAllAsync()
-        {
-            return await _repository.GetAll().ToListAsync();
-        }
-
-        public async Task<T> GetByIdAsync(int id)
-        {
-            var hasProduct = await _repository.GetByIdAsync(id);
-
-            if (hasProduct == null)
+            T existingEntity = await _repository.GetByIdAsync(id);
+            if (existingEntity == null)
             {
-                throw new NotFoundException($"{typeof(T).Name}({id}) not found");
+                return ResponseDTO<NoDataDto>.Fail("The entity not found", 404, true);
             }
-            return hasProduct;
-        }
-
-        public async Task RemoveAsync(T entity)
-        {
-            _repository.Remove(entity);
-            await _unitOfWork.CommitAsync();
-        }
-
-        public async Task RemoveRangeAsync(IEnumerable<T> entities)
-        {
-            _repository.RemoveRange(entities);
-            await _unitOfWork.CommitAsync();
-        }
-
-        public async Task UpdateAsync(T entity)
-        {
             _repository.Update(entity);
             await _unitOfWork.CommitAsync();
+            return ResponseDTO<NoDataDto>.Success(204);
         }
 
-        public IQueryable<T> Where(Expression<Func<T, bool>> expression)
+        public async Task<ResponseDTO<NoDataDto>> RemoveAsync(int id)
         {
-            return _repository.Where(expression);
+            T existingEntity = await _repository.GetByIdAsync(id);
+            if (existingEntity == null)
+            {
+                return ResponseDTO<NoDataDto>.Fail("The entity not found", 404, true);
+            }
+            _repository.Remove(existingEntity);
+            await _unitOfWork.CommitAsync();
+            return ResponseDTO<NoDataDto>.Success(204);
+        }
+
+        public async Task<ResponseDTO<List<TDto>>> GetAllAsync<TDto>() where TDto : class 
+        {
+            List<T> entities = await _repository.GetAll().ToListAsync();
+            List<TDto> dtos = _mapper.Map<List<TDto>>(entities);
+            return ResponseDTO<List<TDto>>.Success(dtos, 200);
+        }
+
+        public async Task<ResponseDTO<TDto>> GetByIdAsync<TDto>(int id) where TDto : class
+        {
+            var entity = await _repository.GetByIdAsync(id);
+            if (entity == null)
+            {
+                return ResponseDTO<TDto>.Fail("The entity not found", 404, true);
+            }
+            TDto dto = _mapper.Map<TDto>(entity);
+            return ResponseDTO<TDto>.Success(dto, 200);
         }
     }
 }

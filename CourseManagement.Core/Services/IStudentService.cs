@@ -10,9 +10,6 @@ namespace CourseManagement.Core.Services
 {
     public interface IStudentService
     {
-        Task<List<Student>> GetAllAsync();
-        Task<Student> GetByIdAsync(int id);
-        Task<Student> AddAsync(Student entity);
         Task<List<Student>> GetStudentsWithCoursesAsync();
         Task<Student> GetStudentByIdWithDetailsAsync(int id);
     }

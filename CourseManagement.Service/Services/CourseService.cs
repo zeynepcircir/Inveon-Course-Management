@@ -4,12 +4,6 @@ using CourseManagement.Core.Entities;
 using CourseManagement.Core.Repositories;
 using CourseManagement.Core.Services;
 using CourseManagement.Core.UnitOfWorks;
-using CourseManagement.Repository.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CourseManagement.Service.Services
 {
@@ -21,31 +15,11 @@ namespace CourseManagement.Service.Services
 
         public CourseService(ICourseRepository courseRepository,
                             IUnitOfWork unitOfWork,
-                            IMapper mapper) : base(courseRepository, unitOfWork)
+                            IMapper mapper) : base(courseRepository, unitOfWork, mapper)
         {
             _courseRepository = courseRepository;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
-        }
-
-        public async Task<List<CourseDTO>> GetAllAsync()
-        {
-            var courses = await _courseRepository.GetAllAsync();
-            return _mapper.Map<List<CourseDTO>>(courses);
-        }
-
-        public async Task<CourseDTO> GetByIdAsync(int id)
-        {
-            var course = await _courseRepository.GetByIdAsync(id);
-            return _mapper.Map<CourseDTO>(course);
-        }
-
-        public async Task<CourseDTO> CreateAsync(CourseDTO dto)
-        {
-            var course = _mapper.Map<Course>(dto);
-            await _courseRepository.AddAsync(course);
-            await _unitOfWork.CommitAsync();
-            return _mapper.Map<CourseDTO>(course);
         }
 
         public async Task<CourseProgressDTO> GetCourseProgressAsync(int courseId, int studentId)
