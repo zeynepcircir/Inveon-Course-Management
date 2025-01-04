@@ -1,5 +1,6 @@
 ﻿using CourseManagement.Core.Entities;
 using CourseManagement.Repository.Configurations;
+using CourseManagement.Repository.Seeds;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,6 +33,9 @@ namespace CourseManagement.Repository.Contexts
             modelBuilder.ApplyConfiguration(new StudentCourseConfiguration());
             modelBuilder.ApplyConfiguration(new PaymentConfiguration());
             modelBuilder.ApplyConfiguration(new CreditCardConfiguration());
+
+            modelBuilder.ApplyConfiguration(new CategorySeed());
+            modelBuilder.ApplyConfiguration(new CourseSeed());
 
             base.OnModelCreating(modelBuilder);
         }

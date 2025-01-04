@@ -1,16 +1,11 @@
 ﻿using CourseManagement.Core.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using CourseManagement.Core.Entities;
 
 namespace CourseManagement.Core.Services
 {
-    public interface ICourseService
+    public interface ICourseService : IService<Course>
     {
-        Task<CourseProgressDTO> GetCourseProgressAsync(int courseId, int studentId);
-        Task<PaymentResultDTO> ProcessPaymentAsync(CreatePaymentRequestDTO paymentRequest);
-        Task<CourseDTO> AddCouponAsync(int courseId, CouponDTO coupon);
+        Task<ResponseDTO<CourseListDTO>> AddCourseAsync(CourseCreateDTO createDto);
+        Task<ResponseDTO<CourseListDTO>> GetEnrolledCourses();
     }
 }

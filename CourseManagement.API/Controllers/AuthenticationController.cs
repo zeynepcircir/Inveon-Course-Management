@@ -1,4 +1,5 @@
-﻿using CourseManagement.Core.DTOs;
+﻿using Azure;
+using CourseManagement.Core.DTOs;
 using CourseManagement.Core.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,15 +19,21 @@ namespace CourseManagement.API.Controllers
         [HttpPost("register")]
         public async Task<ActionResult> RegisterAsync(RegisterDTO model)
         {
-            var result = await _authenticationService.RegisterAsync(model);
-            return Ok(result);
+            var response = await _authenticationService.RegisterAsync(model);
+            return new ObjectResult(response)
+            {
+                StatusCode = response.StatusCode
+            };
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> LoginAsync(LoginDTO model)
         {
-            var result = await _authenticationService.LoginAsync(model);
-            return Ok(result);
+            var response = await _authenticationService.LoginAsync(model);
+            return new ObjectResult(response)
+            {
+                StatusCode = response.StatusCode
+            };
         }
     }
 }

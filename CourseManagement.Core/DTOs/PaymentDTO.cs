@@ -32,7 +32,7 @@ namespace CourseManagement.Core.DTOs
         public string InvoiceNumber { get; set; }
         public DateTime InvoiceDate { get; set; }
         public StudentDTO StudentDetails { get; set; }
-        public CourseDTO CourseDetails { get; set; }
+        public CourseListDTO CourseDetails { get; set; }
 
         public string? AppliedCouponCode { get; set; }
         public decimal? DiscountAmount { get; set; }

@@ -1,6 +1,7 @@
 ﻿using CourseManagement.Core.Repositories;
 using CourseManagement.Repository.Contexts;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,9 +22,10 @@ namespace CourseManagement.Repository.Repositories
             _dbSet = _context.Set<T>();
         }
 
-        public async Task AddAsync(T entity)
+        public async Task<T> AddAsync(T entity)
         {
-            await _dbSet.AddAsync(entity);
+            EntityEntry<T> entityEntry = await _dbSet.AddAsync(entity);
+            return entityEntry.Entity;
         }
 
         public async Task AddRangeAsync(IEnumerable<T> entities)

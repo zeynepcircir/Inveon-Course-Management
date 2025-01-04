@@ -12,11 +12,9 @@ namespace CourseManagement.Repository.Repositories
 {
     public class StudentRepository : GenericRepository<Student>, IStudentRepository
     {
-        private readonly CourseManagementDbContext _context;
 
         public StudentRepository(CourseManagementDbContext context) : base(context)
         {
-            _context = context;
         }
 
         public async Task<List<Student>> GetAllAsync()

@@ -21,7 +21,8 @@ namespace CourseManagement.Repository.Configurations
 
             builder.HasOne(x => x.User)
                 .WithOne()
-                .HasForeignKey<Instructor>(x => x.UserId);
+                .HasForeignKey<Instructor>(x => x.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasMany(x => x.Courses)
                 .WithOne(x => x.Instructor)

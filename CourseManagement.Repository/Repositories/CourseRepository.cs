@@ -7,11 +7,8 @@ namespace CourseManagement.Repository.Repositories
 {
     public class CourseRepository : GenericRepository<Course>, ICourseRepository
     {
-        private readonly CourseManagementDbContext _context;
-
         public CourseRepository(CourseManagementDbContext context) : base(context)
         {
-            _context = context;
         }
 
         public async Task<List<Course>> GetCoursesWithInstructorAsync()

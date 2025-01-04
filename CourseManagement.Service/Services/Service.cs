@@ -20,22 +20,43 @@ namespace CourseManagement.Service.Services
             _mapper = mapper;
         }
 
-        public async Task<ResponseDTO<TDto>> AddAsync<TDto>(T entity) where TDto : class
+        public async Task<ResponseDTO<List<TDto>>> GetAllAsync<TDto>() where TDto : class
         {
-            await _repository.AddAsync(entity);
-            await _unitOfWork.CommitAsync();
+            List<T> entities = await _repository.GetAll().ToListAsync();
+            List<TDto> dtos = _mapper.Map<List<TDto>>(entities);
+            return ResponseDTO<List<TDto>>.Success(dtos, 200);
+        }
+
+        public async Task<ResponseDTO<TDto>> GetByIdAsync<TDto>(int id) where TDto : class
+        {
+            T entity = await _repository.GetByIdAsync(id);
+            if (entity == null)
+            {
+                return ResponseDTO<TDto>.Fail("The entity not found", 404, true);
+            }
             TDto dto = _mapper.Map<TDto>(entity);
             return ResponseDTO<TDto>.Success(dto, 200);
         }
 
-        public async Task<ResponseDTO<NoDataDto>> UpdateAsync(T entity, int id)
+        public async Task<ResponseDTO<TDto>> AddAsync<TDto, TCDto>(TCDto createDto) where TDto : class
+        {
+            T entity = _mapper.Map<T>(createDto);
+            await _repository.AddAsync(entity);
+            await _unitOfWork.CommitAsync();
+            TDto dto = _mapper.Map<TDto>(entity);
+            return ResponseDTO<TDto>.Success(dto, 201);
+        }
+
+        public async Task<ResponseDTO<NoDataDto>> UpdateAsync<TUDto>(TUDto updateDto, int id)
         {
             T existingEntity = await _repository.GetByIdAsync(id);
             if (existingEntity == null)
             {
                 return ResponseDTO<NoDataDto>.Fail("The entity not found", 404, true);
             }
-            _repository.Update(entity);
+
+            _mapper.Map(updateDto, existingEntity);
+            _repository.Update(existingEntity);
             await _unitOfWork.CommitAsync();
             return ResponseDTO<NoDataDto>.Success(204);
         }
@@ -47,27 +68,10 @@ namespace CourseManagement.Service.Services
             {
                 return ResponseDTO<NoDataDto>.Fail("The entity not found", 404, true);
             }
+
             _repository.Remove(existingEntity);
             await _unitOfWork.CommitAsync();
             return ResponseDTO<NoDataDto>.Success(204);
-        }
-
-        public async Task<ResponseDTO<List<TDto>>> GetAllAsync<TDto>() where TDto : class 
-        {
-            List<T> entities = await _repository.GetAll().ToListAsync();
-            List<TDto> dtos = _mapper.Map<List<TDto>>(entities);
-            return ResponseDTO<List<TDto>>.Success(dtos, 200);
-        }
-
-        public async Task<ResponseDTO<TDto>> GetByIdAsync<TDto>(int id) where TDto : class
-        {
-            var entity = await _repository.GetByIdAsync(id);
-            if (entity == null)
-            {
-                return ResponseDTO<TDto>.Fail("The entity not found", 404, true);
-            }
-            TDto dto = _mapper.Map<TDto>(entity);
-            return ResponseDTO<TDto>.Success(dto, 200);
         }
     }
 }

@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using CourseManagement.Core.DTOs;
+using CourseManagement.Core.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace CourseManagement.API.Controllers
 {
@@ -9,10 +10,22 @@ namespace CourseManagement.API.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
-        [HttpGet]
-        public IActionResult GetCategory()
+        private readonly ICategoryService _categoryService;
+
+        public CategoryController(ICategoryService categoryService)
         {
-            return Ok($"Kategori getirildi.");
+            _categoryService = categoryService;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCategory()
+        {
+            ResponseDTO<List<CategoryDTO>> response = await _categoryService.GetAllAsync<CategoryDTO>();
+            return new ObjectResult(response)
+            {
+                StatusCode = response.StatusCode
+            };
         }
     }
 }
+

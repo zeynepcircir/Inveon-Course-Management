@@ -44,6 +44,8 @@ namespace CourseManagement.Repository.Configurations
                 .WithMany(x => x.Courses)
                 .HasForeignKey(x => x.CategoryId);
 
+            builder.Navigation(c => c.Category).AutoInclude();
+
             builder.HasMany(x => x.Chapters)
                 .WithOne(x => x.Course)
                 .HasForeignKey(x => x.CourseId);

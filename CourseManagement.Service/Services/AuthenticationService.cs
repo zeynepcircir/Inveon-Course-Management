@@ -1,7 +1,9 @@
 ﻿using CourseManagement.Core.Constants;
 using CourseManagement.Core.DTOs;
 using CourseManagement.Core.Entities;
+using CourseManagement.Core.Repositories;
 using CourseManagement.Core.Services;
+using CourseManagement.Core.UnitOfWorks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -14,12 +16,18 @@ namespace CourseManagement.Service.Services
     public class AuthenticationService : IAuthenticationService
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IStudentRepository _studentRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly JWTOptionsDTO _jwt;
 
         public AuthenticationService(UserManager<ApplicationUser> userManager,
+                                    IStudentRepository studentRepository,
+                                    IUnitOfWork unitOfWork,
                                     IOptions<JWTOptionsDTO> jwt)
         {
             _userManager = userManager;
+            _studentRepository = studentRepository;
+            _unitOfWork = unitOfWork;
             _jwt = jwt.Value;
         }
 
@@ -43,6 +51,15 @@ namespace CourseManagement.Service.Services
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(user, AuthConstant.Roles.Student.ToString());
+
+                    Student student = new Student
+                    {
+                        UserId = user.Id,
+                        User = user
+                    };
+
+                    await _studentRepository.AddAsync(student);
+                    await _unitOfWork.CommitAsync();
 
                     var successData = new RegisterResponseDTO($"User Registered {user.UserName}", null);
                     return ResponseDTO<RegisterResponseDTO>.Success(successData, 201); // 201 Created

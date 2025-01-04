@@ -9,34 +9,53 @@ namespace CourseManagement.Service.Services
 {
     public class CourseService : Service<Course>, ICourseService
     {
-        private readonly ICourseRepository _courseRepository;
+        private readonly ICourseRepository _repository;
+        private readonly ICategoryRepository _categoryRepository;
+        private readonly IInstructorRepository _instructorRepository;
+        private readonly IStudentCourseRepository _studentCourseRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
         public CourseService(ICourseRepository courseRepository,
+                            ICategoryRepository categoryRepository,
+                            IInstructorRepository instructorRepository,
+                            IStudentCourseRepository studentCourseRepository,
                             IUnitOfWork unitOfWork,
                             IMapper mapper) : base(courseRepository, unitOfWork, mapper)
         {
-            _courseRepository = courseRepository;
+            _repository = courseRepository;
+            _categoryRepository = categoryRepository;
+            _instructorRepository = instructorRepository;
+            _studentCourseRepository = studentCourseRepository;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
-        public async Task<CourseProgressDTO> GetCourseProgressAsync(int courseId, int studentId)
+        public async Task<ResponseDTO<CourseListDTO>> AddCourseAsync(CourseCreateDTO createDto)
         {
-            // Implementation for getting course progress
-            throw new NotImplementedException();
+            Course entity = _mapper.Map<Course>(createDto);
+
+            bool isCategoryExists = await _categoryRepository.AnyAsync(c => c.Id == createDto.CategoryId);
+            if (!isCategoryExists)
+            {
+                return ResponseDTO<CourseListDTO>.Fail("Category not found", 404, true);
+            }
+
+            bool isInstructorExists = await _instructorRepository.AnyAsync(i => i.Id == createDto.InstructorId);
+            if (!isInstructorExists)
+            {
+                return ResponseDTO<CourseListDTO>.Fail("Instructor not found", 404, true);
+            }
+
+            Course newEntity = await _repository.AddAsync(entity);
+            await _unitOfWork.CommitAsync();
+
+            CourseListDTO dto = _mapper.Map<CourseListDTO>(newEntity);
+            return ResponseDTO<CourseListDTO>.Success(dto, 201);
         }
 
-        public async Task<PaymentResultDTO> ProcessPaymentAsync(CreatePaymentRequestDTO paymentRequest)
+        public Task<ResponseDTO<CourseListDTO>> GetEnrolledCourses()
         {
-            // Implementation for processing payment
-            throw new NotImplementedException();
-        }
-
-        public async Task<CourseDTO> AddCouponAsync(int courseId, CouponDTO coupon)
-        {
-            // Implementation for adding coupon
             throw new NotImplementedException();
         }
     }

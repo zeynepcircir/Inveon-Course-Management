@@ -1,14 +1,8 @@
-﻿using CourseManagement.Core.DTOs;
-using CourseManagement.Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CourseManagement.Core.Entities;
 
 namespace CourseManagement.Core.Services
 {
-    public interface IStudentService
+    public interface IStudentService : IService<Student>
     {
         Task<List<Student>> GetStudentsWithCoursesAsync();
         Task<Student> GetStudentByIdWithDetailsAsync(int id);

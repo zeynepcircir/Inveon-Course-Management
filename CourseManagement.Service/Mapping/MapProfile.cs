@@ -8,9 +8,13 @@ namespace CourseManagement.Service.Mapping
     {
         public MapProfile()
         {
-            CreateMap<Course, CourseDTO>().ReverseMap();
+            CreateMap<Course, CourseListDTO>()
+                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
+                .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.Category.Id))
+                .ReverseMap();
             CreateMap<Instructor, InstructorDTO>().ReverseMap();
             CreateMap<Student, StudentDTO>().ReverseMap();
+            CreateMap<Category, CategoryDTO>().ReverseMap();
         }
     }
 }

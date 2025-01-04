@@ -1,13 +1,9 @@
 ﻿using CourseManagement.Core.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using CourseManagement.Core.Entities;
 
 namespace CourseManagement.Core.Services
 {
-    public interface IInstructorService
+    public interface IInstructorService : IService<Instructor>
     {
         Task<List<PaymentResultDTO>> GetEarningsAsync(int instructorId);
         Task<List<ReviewDTO>> GetReviewsAsync(int instructorId);

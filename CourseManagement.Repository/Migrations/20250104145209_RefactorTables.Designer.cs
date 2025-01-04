@@ -4,6 +4,7 @@ using CourseManagement.Repository.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CourseManagement.Repository.Migrations
 {
     [DbContext(typeof(CourseManagementDbContext))]
-    partial class CourseManagementDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250104145209_RefactorTables")]
+    partial class RefactorTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -230,78 +233,6 @@ namespace CourseManagement.Repository.Migrations
                     b.HasIndex("InstructorId");
 
                     b.ToTable("Courses");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AverageRating = 4.5,
-                            CategoryId = 1,
-                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Learn the basics of programming with this beginner-friendly course.",
-                            ImageUrl = "programming-course.jpg",
-                            InstructorId = 1,
-                            Language = "English",
-                            Level = "Beginner",
-                            Price = 49.99m,
-                            Title = "Introduction to Programming"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AverageRating = 4.7999999999999998,
-                            CategoryId = 2,
-                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Take your design skills to the next level with this advanced course.",
-                            ImageUrl = "design-course.jpg",
-                            InstructorId = 1,
-                            Language = "English",
-                            Level = "Advanced",
-                            Price = 79.99m,
-                            Title = "Advanced Graphic Design"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            AverageRating = 4.7000000000000002,
-                            CategoryId = 3,
-                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Master the art of digital marketing with this comprehensive course.",
-                            ImageUrl = "marketing-course.jpg",
-                            InstructorId = 1,
-                            Language = "English",
-                            Level = "Intermediate",
-                            Price = 99.99m,
-                            Title = "Digital Marketing Mastery"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            AverageRating = 4.5999999999999996,
-                            CategoryId = 4,
-                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Learn the essentials of starting and managing your own business.",
-                            ImageUrl = "business-course.jpg",
-                            InstructorId = 1,
-                            Language = "English",
-                            Level = "Beginner",
-                            Price = 59.99m,
-                            Title = "Entrepreneurship Essentials"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            AverageRating = 4.9000000000000004,
-                            CategoryId = 5,
-                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Explore the world of scientific research with practical techniques.",
-                            ImageUrl = "science-course.jpg",
-                            InstructorId = 1,
-                            Language = "English",
-                            Level = "Intermediate",
-                            Price = 69.99m,
-                            Title = "Scientific Research Techniques"
-                        });
                 });
 
             modelBuilder.Entity("CourseManagement.Core.Entities.CourseChapter", b =>

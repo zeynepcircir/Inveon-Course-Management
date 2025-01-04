@@ -37,12 +37,15 @@ builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepositor
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 builder.Services.AddScoped<IInstructorRepository, InstructorRepository>();
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IStudentCourseRepository, StudentCourseRepository>();
 
 // Services
 builder.Services.AddScoped(typeof(IService<>), typeof(Service<>));
 builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<IInstructorService, InstructorService>();
 builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -84,8 +87,13 @@ using (var scope = app.Services.CreateScope())
 
     var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+    var studentRepository = services.GetRequiredService<IStudentRepository>();
+    var instructorRepository = services.GetRequiredService<IInstructorRepository>();
+    var unitOfWork = services.GetRequiredService<IUnitOfWork>();
 
-    var dbSeeder = new ApplicationUserSeed(userManager, roleManager);
+    var dbSeeder = new ApplicationUserSeed(userManager, roleManager,
+                                           studentRepository, instructorRepository,
+                                           unitOfWork);
     await dbSeeder.SeedAsync();
 }
 
