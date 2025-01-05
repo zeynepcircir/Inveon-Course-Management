@@ -92,5 +92,19 @@ namespace CourseManagement.API.Controllers
             var response = await _courseService.DeleteCourseAsync(id, User.FindFirst("uid")?.Value);
             return StatusCode(response.StatusCode, response);
         }
+
+        [HttpPost("{courseId}/addToCart")]
+        public async Task<IActionResult> AddToCart(int courseId)
+        {
+            var response = await _courseService.AddToCart(courseId, User.FindFirst("uid")?.Value);
+            return StatusCode(response.StatusCode, response);
+        }
+
+        [HttpGet("cartCourses")]
+        public async Task<IActionResult> GetCartCourses()
+        {
+            var response = await _courseService.GetCartCourses(User.FindFirst("uid")?.Value);
+            return StatusCode(response.StatusCode, response);
+        }
     }
 }

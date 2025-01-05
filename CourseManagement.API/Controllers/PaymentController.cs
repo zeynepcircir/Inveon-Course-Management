@@ -1,9 +1,13 @@
 ﻿using CourseManagement.Core.DTOs;
 using CourseManagement.Core.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CourseManagement.API.Controllers
 {
+    [Authorize]
+    [Route("api/[controller]")]
+    [ApiController]
     public class PaymentController : ControllerBase
     {
         private readonly IPaymentService _paymentService;
@@ -13,7 +17,7 @@ namespace CourseManagement.API.Controllers
             _paymentService = paymentService;
         }
 
-        [HttpPost("makePayment")]
+        [HttpPost]
         public async Task<IActionResult> MakePayment([FromBody] PaymentCreateDTO createDTO)
         {
             var response = await _paymentService.MakePayment(createDTO, User.FindFirst("uid")?.Value);

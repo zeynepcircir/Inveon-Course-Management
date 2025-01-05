@@ -4,6 +4,7 @@ using CourseManagement.Core.Entities;
 using CourseManagement.Core.Repositories;
 using CourseManagement.Core.Services;
 using CourseManagement.Core.UnitOfWorks;
+using CourseManagement.Repository.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace CourseManagement.Service.Services
@@ -15,13 +16,16 @@ namespace CourseManagement.Service.Services
         private readonly ICourseRepository _courseRepository;
         private readonly IStudentRepository _studentRepository;
         private readonly IStudentCourseRepository _studentCourseRepository;
+        private readonly IShoppingCartRepository _shoppingCartRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+
         public PaymentService(IPaymentRepository repository,
                              ICreditCardRepository creditCardRepository,
                              ICourseRepository courseRepository,
                              IStudentRepository studentRepository,
                              IStudentCourseRepository studentCourseRepository,
+                             IShoppingCartRepository shoppingCartRepository,
                              IUnitOfWork unitOfWork,
                              IMapper mapper) : base(repository, unitOfWork, mapper)
         {
@@ -30,6 +34,7 @@ namespace CourseManagement.Service.Services
             _courseRepository = courseRepository;
             _studentRepository = studentRepository;
             _studentCourseRepository = studentCourseRepository;
+            _shoppingCartRepository = shoppingCartRepository;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
@@ -47,10 +52,15 @@ namespace CourseManagement.Service.Services
                 return ResponseDTO<PaymentDTO>.Fail("Student not found.", 404, true);
             }
 
-            bool courseExists = await _courseRepository.AnyAsync(c => c.Id == createDTO.CourseId);
-            if (!courseExists)
+            ShoppingCart? shoppingCart = await _shoppingCartRepository
+                .Where(sc => sc.StudentId == student.Id)
+                .Include(sc => sc.ShoppingCartCourses)
+                    .ThenInclude(scc => scc.Course)
+                .FirstOrDefaultAsync();
+
+            if (shoppingCart == null || !shoppingCart.ShoppingCartCourses.Any())
             {
-                return ResponseDTO<PaymentDTO>.Fail("Course not found.", 404, true);
+                return ResponseDTO<PaymentDTO>.Fail("No courses in the shopping cart to process payment.", 404, true);
             }
 
             CreditCard creditCard = new CreditCard
@@ -63,29 +73,40 @@ namespace CourseManagement.Service.Services
             await _creditCardRepository.AddAsync(creditCard);
             await _unitOfWork.CommitAsync();
 
-            Payment payment = new Payment
+            foreach (ShoppingCartCourse shoppingCartCourse in shoppingCart.ShoppingCartCourses)
             {
-                CourseId = createDTO.CourseId,
+                Payment payment = new Payment
+                {
+                    CourseId = shoppingCartCourse.CourseId,
+                    StudentId = student.Id,
+                    CreditCardId = creditCard.Id,
+                    PaymentTime = DateTime.UtcNow
+                };
+
+                await _repository.AddAsync(payment);
+
+                StudentCourse studentCourse = new StudentCourse
+                {
+                    CourseId = shoppingCartCourse.CourseId,
+                    StudentId = student.Id,
+                    IsCompleted = false,
+                    LastAccessDate = DateTime.UtcNow
+                };
+
+                await _studentCourseRepository.AddAsync(studentCourse);
+            }
+
+            _shoppingCartRepository.Remove(shoppingCart);
+            await _unitOfWork.CommitAsync();
+
+            PaymentDTO paymentDto = new PaymentDTO
+            {
+                Id = creditCard.Id,
                 StudentId = student.Id,
                 CreditCardId = creditCard.Id,
                 PaymentTime = DateTime.UtcNow
             };
 
-            await _repository.AddAsync(payment);
-            await _unitOfWork.CommitAsync();
-
-            StudentCourse studentCourse = new StudentCourse
-            {
-                StudentId = student.Id,
-                CourseId = createDTO.CourseId,
-                IsCompleted = false,
-                LastAccessDate = DateTime.UtcNow
-            };
-
-            await _studentCourseRepository.AddAsync(studentCourse);
-            await _unitOfWork.CommitAsync();
-
-            PaymentDTO paymentDto = _mapper.Map<PaymentDTO>(payment);
             return ResponseDTO<PaymentDTO>.Success(paymentDto, 201);
         }
     }

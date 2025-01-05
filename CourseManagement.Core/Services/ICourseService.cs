@@ -6,6 +6,8 @@ namespace CourseManagement.Core.Services
     public interface ICourseService : IService<Course>
     {
         Task<ResponseDTO<CourseListDTO>> AddCourseAsync(CourseCreateDTO createDto, string? userId);
+        Task<ResponseDTO<CourseListDTO>> AddToCart(int courseId, string? userId);
+        Task<ResponseDTO<List<CourseListDTO>>> GetCartCourses(string? userId);
         Task<ResponseDTO<CourseListDTO>> DeleteCourseAsync(int courseId, string? userId);
         Task<ResponseDTO<CourseListDTO>> UpdateCourseAsync(int courseId, CourseCreateDTO dto, string? userId);
         Task<ResponseDTO<CourseChapterDTO>> AddChapterToCourseAsync(int courseId, CourseChapterCreateDTO createDto, string? userId);

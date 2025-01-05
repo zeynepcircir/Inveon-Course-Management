@@ -18,6 +18,10 @@ namespace CourseManagement.Repository.Configurations
                 .HasForeignKey<Student>(x => x.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            builder.HasOne(s => s.ShoppingCart)
+                .WithOne(sc => sc.Student)
+                .HasForeignKey<ShoppingCart>(sc => sc.StudentId);
+
             builder.HasMany(x => x.EnrolledCourses)
                 .WithOne(x => x.Student)
                 .HasForeignKey(x => x.StudentId);
@@ -26,6 +30,5 @@ namespace CourseManagement.Repository.Configurations
                 .WithOne(x => x.Student)
                 .HasForeignKey(x => x.StudentId);
         }
-
     }
 }

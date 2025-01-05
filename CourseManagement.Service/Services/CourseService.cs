@@ -17,6 +17,7 @@ namespace CourseManagement.Service.Services
         private readonly IStudentCourseRepository _studentCourseRepository;
         private readonly ICourseChapterRepository _courseChapterRepository;
         private readonly IStudentChapterRepository _studentChapterRepository;
+        private readonly IShoppingCartRepository _shoppingCartRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
@@ -27,6 +28,7 @@ namespace CourseManagement.Service.Services
                             IStudentCourseRepository studentCourseRepository,
                             ICourseChapterRepository courseChapterRepository,
                             IStudentChapterRepository studentChapterRepository,
+                            IShoppingCartRepository shoppingCartRepository,
                             IUnitOfWork unitOfWork,
                             IMapper mapper) : base(courseRepository, unitOfWork, mapper)
         {
@@ -37,6 +39,7 @@ namespace CourseManagement.Service.Services
             _studentCourseRepository = studentCourseRepository;
             _courseChapterRepository = courseChapterRepository;
             _studentChapterRepository = studentChapterRepository;
+            _shoppingCartRepository = shoppingCartRepository;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
@@ -326,6 +329,93 @@ namespace CourseManagement.Service.Services
             }
 
             List<CourseListDTO> courseListDtos = _mapper.Map<List<CourseListDTO>>(courses);
+            return ResponseDTO<List<CourseListDTO>>.Success(courseListDtos, 200);
+        }
+
+        public async Task<ResponseDTO<CourseListDTO>> AddToCart(int courseId, string? userId)
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                return ResponseDTO<CourseListDTO>.Fail("User ID cannot be null or empty.", 400, true);
+            }
+
+            var student = await _studentRepository.Where(s => s.UserId == userId).FirstOrDefaultAsync();
+            if (student == null)
+            {
+                return ResponseDTO<CourseListDTO>.Fail("Student not found.", 404, true);
+            }
+
+            var course = await _repository.Where(c => c.Id == courseId).FirstOrDefaultAsync();
+            if (course == null)
+            {
+                return ResponseDTO<CourseListDTO>.Fail("Course not found.", 404, true);
+            }
+
+            var shoppingCart = await _shoppingCartRepository
+                .Where(sc => sc.StudentId == student.Id)
+                .Include(sc => sc.ShoppingCartCourses)
+                .FirstOrDefaultAsync();
+
+            if (shoppingCart == null)
+            {
+                shoppingCart = new ShoppingCart
+                {
+                    StudentId = student.Id,
+                    ShoppingCartCourses = new List<ShoppingCartCourse>()
+                };
+
+                await _shoppingCartRepository.AddAsync(shoppingCart);
+                await _unitOfWork.CommitAsync();
+            }
+
+            bool isCourseAlreadyInCart = shoppingCart.ShoppingCartCourses
+                .Any(scc => scc.CourseId == courseId);
+
+            if (isCourseAlreadyInCart)
+            {
+                return ResponseDTO<CourseListDTO>.Fail("Course is already in the cart.", 409, true);
+            }
+
+            var shoppingCartCourse = new ShoppingCartCourse
+            {
+                ShoppingCartId = shoppingCart.Id,
+                CourseId = course.Id
+            };
+
+            shoppingCart.ShoppingCartCourses.Add(shoppingCartCourse);
+            await _unitOfWork.CommitAsync();
+
+            var courseDto = _mapper.Map<CourseListDTO>(course);
+            return ResponseDTO<CourseListDTO>.Success(courseDto, 200);
+        }
+
+        public async Task<ResponseDTO<List<CourseListDTO>>> GetCartCourses(string? userId)
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                return ResponseDTO<List<CourseListDTO>>.Fail("User ID cannot be null or empty.", 400, true);
+            }
+
+            var student = await _studentRepository.Where(s => s.UserId == userId).FirstOrDefaultAsync();
+            if (student == null)
+            {
+                return ResponseDTO<List<CourseListDTO>>.Fail("Student not found.", 404, true);
+            }
+
+            var shoppingCart = await _shoppingCartRepository
+                .Where(sc => sc.StudentId == student.Id)
+                .Include(sc => sc.ShoppingCartCourses)
+                    .ThenInclude(scc => scc.Course)
+                .FirstOrDefaultAsync();
+
+            if (shoppingCart == null || !shoppingCart.ShoppingCartCourses.Any())
+            {
+                return ResponseDTO<List<CourseListDTO>>.Fail("No courses found in the cart.", 404, true);
+            }
+
+            var courses = shoppingCart.ShoppingCartCourses.Select(scc => scc.Course).ToList();
+            var courseListDtos = _mapper.Map<List<CourseListDTO>>(courses);
+
             return ResponseDTO<List<CourseListDTO>>.Success(courseListDtos, 200);
         }
     }

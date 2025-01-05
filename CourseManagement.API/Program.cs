@@ -43,6 +43,8 @@ builder.Services.AddScoped<ICourseChapterRepository, CourseChapterRepository>();
 builder.Services.AddScoped<IStudentChapterRepository, StudentChapterRepository>();
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 builder.Services.AddScoped<ICreditCardRepository, CreditCardRepository>();
+builder.Services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
+builder.Services.AddScoped<IShoppingCartCourseRepository, ShoppingCartCourseRepository>();
 
 // Services
 builder.Services.AddScoped(typeof(IService<>), typeof(Service<>));
