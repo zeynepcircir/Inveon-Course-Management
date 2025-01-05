@@ -4,6 +4,7 @@ namespace CourseManagement.Core.DTOs
 {
     public class CourseListDTO
     {
+        public int Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public decimal Price { get; set; }
@@ -11,6 +12,5 @@ namespace CourseManagement.Core.DTOs
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
         public int? CompletionPercentage { get; set; }
-        public ICollection<CourseChapter>? Chapters { get; set; }
     }
 }

@@ -6,6 +6,7 @@
         public string? ProfilePictureUrl { get; set; }
         public ApplicationUser User { get; set; }
         public ICollection<StudentCourse>? EnrolledCourses { get; set; }
+        public ICollection<StudentChapter>? StudentChapters { get; set; }
         public ICollection<Review>? Reviews { get; set; }
     }
 }

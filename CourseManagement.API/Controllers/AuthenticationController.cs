@@ -20,20 +20,14 @@ namespace CourseManagement.API.Controllers
         public async Task<ActionResult> RegisterAsync(RegisterDTO model)
         {
             var response = await _authenticationService.RegisterAsync(model);
-            return new ObjectResult(response)
-            {
-                StatusCode = response.StatusCode
-            };
+            return StatusCode(response.StatusCode, response);
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> LoginAsync(LoginDTO model)
         {
             var response = await _authenticationService.LoginAsync(model);
-            return new ObjectResult(response)
-            {
-                StatusCode = response.StatusCode
-            };
+            return StatusCode(response.StatusCode, response);
         }
     }
 }

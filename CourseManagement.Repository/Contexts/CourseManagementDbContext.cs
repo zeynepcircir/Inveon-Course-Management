@@ -36,6 +36,11 @@ namespace CourseManagement.Repository.Contexts
 
             modelBuilder.ApplyConfiguration(new CategorySeed());
             modelBuilder.ApplyConfiguration(new CourseSeed());
+            modelBuilder.ApplyConfiguration(new CourseChapterSeed());
+            modelBuilder.ApplyConfiguration(new CreditCardSeed());
+            modelBuilder.ApplyConfiguration(new PaymentSeed());
+            modelBuilder.ApplyConfiguration(new StudentCourseSeed());
+            modelBuilder.ApplyConfiguration(new StudentChapterSeed());
 
             base.OnModelCreating(modelBuilder);
         }

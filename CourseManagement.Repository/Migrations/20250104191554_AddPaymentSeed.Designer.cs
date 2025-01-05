@@ -4,6 +4,7 @@ using CourseManagement.Repository.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CourseManagement.Repository.Migrations
 {
     [DbContext(typeof(CourseManagementDbContext))]
-    partial class CourseManagementDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250104191554_AddPaymentSeed")]
+    partial class AddPaymentSeed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -322,6 +325,7 @@ namespace CourseManagement.Repository.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ImageUrl")
+                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
@@ -341,128 +345,6 @@ namespace CourseManagement.Repository.Migrations
                     b.HasIndex("CourseId");
 
                     b.ToTable("CourseContents");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CourseId = 1,
-                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Duration = 60,
-                            ImageUrl = "chapter1-programming.jpg",
-                            OrderIndex = 1,
-                            Title = "Introduction to Programming Basics"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CourseId = 1,
-                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Duration = 90,
-                            ImageUrl = "chapter2-programming.jpg",
-                            OrderIndex = 2,
-                            Title = "Control Structures in Programming"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CourseId = 1,
-                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Duration = 75,
-                            ImageUrl = "chapter3-programming.jpg",
-                            OrderIndex = 3,
-                            Title = "Functions and Modular Programming"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CourseId = 1,
-                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Duration = 120,
-                            ImageUrl = "chapter4-programming.jpg",
-                            OrderIndex = 4,
-                            Title = "Object-Oriented Programming Basics"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CourseId = 3,
-                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Duration = 45,
-                            ImageUrl = "chapter1-marketing.jpg",
-                            OrderIndex = 1,
-                            Title = "Introduction to Digital Marketing"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            CourseId = 3,
-                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Duration = 60,
-                            ImageUrl = "chapter2-marketing.jpg",
-                            OrderIndex = 2,
-                            Title = "SEO Strategies"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            CourseId = 4,
-                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Duration = 50,
-                            ImageUrl = "chapter1-business.jpg",
-                            OrderIndex = 1,
-                            Title = "Basics of Entrepreneurship"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            CourseId = 4,
-                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Duration = 70,
-                            ImageUrl = "chapter2-business.jpg",
-                            OrderIndex = 2,
-                            Title = "Advanced Business Strategies"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            CourseId = 5,
-                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Duration = 65,
-                            ImageUrl = "chapter1-science.jpg",
-                            OrderIndex = 1,
-                            Title = "Introduction to Scientific Methods"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            CourseId = 5,
-                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Duration = 80,
-                            ImageUrl = "chapter2-science.jpg",
-                            OrderIndex = 2,
-                            Title = "Advanced Research Techniques"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            CourseId = 2,
-                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Duration = 75,
-                            ImageUrl = "chapter1-design.jpg",
-                            OrderIndex = 1,
-                            Title = "Getting Started with Graphic Design"
-                        },
-                        new
-                        {
-                            Id = 12,
-                            CourseId = 2,
-                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Duration = 90,
-                            ImageUrl = "chapter2-design.jpg",
-                            OrderIndex = 2,
-                            Title = "Advanced Graphic Design Techniques"
-                        });
                 });
 
             modelBuilder.Entity("CourseManagement.Core.Entities.CreditCard", b =>
@@ -715,88 +597,6 @@ namespace CourseManagement.Repository.Migrations
                         .IsUnique();
 
                     b.ToTable("Students");
-                });
-
-            modelBuilder.Entity("CourseManagement.Core.Entities.StudentChapter", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CompletionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("CourseChapterId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsCompleted")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("StudentId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CourseChapterId");
-
-                    b.HasIndex("StudentId");
-
-                    b.ToTable("StudentChapter");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CompletionDate = new DateTime(2025, 1, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CourseChapterId = 1,
-                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsCompleted = true,
-                            StudentId = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CompletionDate = new DateTime(2025, 1, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CourseChapterId = 2,
-                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsCompleted = true,
-                            StudentId = 1
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CompletionDate = new DateTime(2025, 1, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CourseChapterId = 3,
-                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsCompleted = true,
-                            StudentId = 1
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CompletionDate = new DateTime(2025, 1, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CourseChapterId = 5,
-                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsCompleted = true,
-                            StudentId = 1
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CompletionDate = new DateTime(2025, 1, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CourseChapterId = 7,
-                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsCompleted = true,
-                            StudentId = 1
-                        });
                 });
 
             modelBuilder.Entity("CourseManagement.Core.Entities.StudentCourse", b =>
@@ -1118,25 +918,6 @@ namespace CourseManagement.Repository.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("CourseManagement.Core.Entities.StudentChapter", b =>
-                {
-                    b.HasOne("CourseManagement.Core.Entities.CourseChapter", "CourseChapter")
-                        .WithMany("StudentChapters")
-                        .HasForeignKey("CourseChapterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CourseManagement.Core.Entities.Student", "Student")
-                        .WithMany("StudentChapters")
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CourseChapter");
-
-                    b.Navigation("Student");
-                });
-
             modelBuilder.Entity("CourseManagement.Core.Entities.StudentCourse", b =>
                 {
                     b.HasOne("CourseManagement.Core.Entities.Course", "Course")
@@ -1221,11 +1002,6 @@ namespace CourseManagement.Repository.Migrations
                     b.Navigation("StudentCourses");
                 });
 
-            modelBuilder.Entity("CourseManagement.Core.Entities.CourseChapter", b =>
-                {
-                    b.Navigation("StudentChapters");
-                });
-
             modelBuilder.Entity("CourseManagement.Core.Entities.Instructor", b =>
                 {
                     b.Navigation("Courses");
@@ -1236,8 +1012,6 @@ namespace CourseManagement.Repository.Migrations
                     b.Navigation("EnrolledCourses");
 
                     b.Navigation("Reviews");
-
-                    b.Navigation("StudentChapters");
                 });
 #pragma warning restore 612, 618
         }

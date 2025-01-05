@@ -3,7 +3,6 @@ using CourseManagement.Core.Entities;
 using CourseManagement.Core.Repositories;
 using CourseManagement.Core.UnitOfWorks;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace CourseManagement.Repository.Seeds
 {

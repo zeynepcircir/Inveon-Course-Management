@@ -6,13 +6,12 @@ using System.Threading.Tasks;
 
 namespace CourseManagement.Core.DTOs
 {
-    public class CourseChapterDTO
+    public class CourseChapterCreateDTO
     {
-        public int Id { get; set; }
-        public int CourseId { get; set; }
         public string Title { get; set; }
+        public int Duration { get; set; }
         public int OrderIndex { get; set; }
         public string? ImageUrl { get; set; }
-        public int Duration { get; set; }
     }
+
 }

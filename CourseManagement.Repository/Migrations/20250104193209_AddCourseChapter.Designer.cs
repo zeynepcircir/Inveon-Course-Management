@@ -4,6 +4,7 @@ using CourseManagement.Repository.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CourseManagement.Repository.Migrations
 {
     [DbContext(typeof(CourseManagementDbContext))]
-    partial class CourseManagementDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250104193209_AddCourseChapter")]
+    partial class AddCourseChapter
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -322,6 +325,7 @@ namespace CourseManagement.Repository.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ImageUrl")
+                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
@@ -717,88 +721,6 @@ namespace CourseManagement.Repository.Migrations
                     b.ToTable("Students");
                 });
 
-            modelBuilder.Entity("CourseManagement.Core.Entities.StudentChapter", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CompletionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("CourseChapterId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsCompleted")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("StudentId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CourseChapterId");
-
-                    b.HasIndex("StudentId");
-
-                    b.ToTable("StudentChapter");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CompletionDate = new DateTime(2025, 1, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CourseChapterId = 1,
-                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsCompleted = true,
-                            StudentId = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CompletionDate = new DateTime(2025, 1, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CourseChapterId = 2,
-                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsCompleted = true,
-                            StudentId = 1
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CompletionDate = new DateTime(2025, 1, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CourseChapterId = 3,
-                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsCompleted = true,
-                            StudentId = 1
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CompletionDate = new DateTime(2025, 1, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CourseChapterId = 5,
-                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsCompleted = true,
-                            StudentId = 1
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CompletionDate = new DateTime(2025, 1, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CourseChapterId = 7,
-                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsCompleted = true,
-                            StudentId = 1
-                        });
-                });
-
             modelBuilder.Entity("CourseManagement.Core.Entities.StudentCourse", b =>
                 {
                     b.Property<int>("Id")
@@ -1118,25 +1040,6 @@ namespace CourseManagement.Repository.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("CourseManagement.Core.Entities.StudentChapter", b =>
-                {
-                    b.HasOne("CourseManagement.Core.Entities.CourseChapter", "CourseChapter")
-                        .WithMany("StudentChapters")
-                        .HasForeignKey("CourseChapterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CourseManagement.Core.Entities.Student", "Student")
-                        .WithMany("StudentChapters")
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CourseChapter");
-
-                    b.Navigation("Student");
-                });
-
             modelBuilder.Entity("CourseManagement.Core.Entities.StudentCourse", b =>
                 {
                     b.HasOne("CourseManagement.Core.Entities.Course", "Course")
@@ -1221,11 +1124,6 @@ namespace CourseManagement.Repository.Migrations
                     b.Navigation("StudentCourses");
                 });
 
-            modelBuilder.Entity("CourseManagement.Core.Entities.CourseChapter", b =>
-                {
-                    b.Navigation("StudentChapters");
-                });
-
             modelBuilder.Entity("CourseManagement.Core.Entities.Instructor", b =>
                 {
                     b.Navigation("Courses");
@@ -1236,8 +1134,6 @@ namespace CourseManagement.Repository.Migrations
                     b.Navigation("EnrolledCourses");
 
                     b.Navigation("Reviews");
-
-                    b.Navigation("StudentChapters");
                 });
 #pragma warning restore 612, 618
         }

@@ -18,13 +18,10 @@ namespace CourseManagement.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetCategory()
+        public async Task<IActionResult> GetAllAsync()
         {
             ResponseDTO<List<CategoryDTO>> response = await _categoryService.GetAllAsync<CategoryDTO>();
-            return new ObjectResult(response)
-            {
-                StatusCode = response.StatusCode
-            };
+            return StatusCode(response.StatusCode, response);
         }
     }
 }

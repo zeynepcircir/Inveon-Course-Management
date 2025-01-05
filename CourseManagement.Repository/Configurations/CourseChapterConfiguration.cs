@@ -21,7 +21,6 @@ namespace CourseManagement.Repository.Configurations
                 .IsRequired();
 
             builder.Property(x => x.ImageUrl)
-                .IsRequired()
                 .HasMaxLength(500);
 
             builder.HasOne(x => x.Course)
