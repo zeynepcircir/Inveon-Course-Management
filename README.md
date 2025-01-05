@@ -30,12 +30,20 @@ Inveon Course Management is a modern web application that allows users to explor
   - SQL Server
 
 
-## Login 🛠️
+## Login For Instructor🧑🏻‍🏫
 ```http
 Body (JSON):
 {
   "email": "instructor@example.com",
   "password": "Instructor123!"
+}
+```
+## Login For Student🛠👩‍🎓
+```http
+Body (JSON):
+{
+  "email": "student@example.com",
+  "password": "Student123!"
 }
 ```
 
