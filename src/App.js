@@ -2,6 +2,7 @@ import React, { useState, useEffect, createContext, useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import AppNavbar from './components/Navbar/Navbar';
 import Sidebar from './components/Sidebar/Sidebar';
+import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 import HomePage from './pages/HomePage/HomePage';
 import CourseDetailPage from './pages/CourseDetailPage/CourseDetailPage';
 import LoginPage from './pages/LoginPage/LoginPage';
@@ -54,86 +55,128 @@ function App() {
               <Route path="/register" element={<RegisterPage />} />
 
               {/* Diğer sayfalar: Navbar, Sidebar ve Footer ile */}
+
               <Route
                 path="/"
                 element={
-                  <Layout>
-                    <HomePage />
-                  </Layout>
+                  <PrivateRoute>
+                    <Layout>
+                      <HomePage />
+                    </Layout>
+                  </PrivateRoute>
                 }
               />
+
               <Route
                 path="/course/:id"
                 element={
-                  <Layout>
-                    <CourseDetailPage />
-                  </Layout>
+                  <PrivateRoute>
+                    <Layout>
+                      <CourseDetailPage />
+                    </Layout>
+                  </PrivateRoute>
                 }
               />
+
               <Route
-                path="/dashboard"
+                path="/course/:id"
                 element={
-                  <Layout>
-                    <DashboardPage />
-                  </Layout>
+                  <PrivateRoute>
+                    <Layout>
+                      <CourseDetailPage />
+                    </Layout>
+                  </PrivateRoute>
                 }
               />
-              <Route
-                path="/teacher"
-                element={
-                  <Layout>
-                    <TeacherPage />
-                  </Layout>
-                }
-              />
-              <Route
-                path="/teacher/add"
-                element={
-                  <Layout>
-                    <AddCoursePage />
-                  </Layout>
-                }
-              />
-              <Route
-                path="/teacher/edit/:id"
-                element={
-                  <Layout>
-                    <EditCoursePage />
-                  </Layout>
-                }
-              />
-              <Route
-                path="/payment"
-                element={
-                  <Layout>
-                    <PaymentPage />
-                  </Layout>
-                }
-              />
+
               <Route
                 path="/about"
                 element={
-                  <Layout>
-                    <AboutPage />
-                  </Layout>
+                  <PrivateRoute>
+                    <Layout>
+                      <AboutPage />
+                    </Layout>
+                  </PrivateRoute>
                 }
               />
-              <Route
-                path="/cart"
-                element={
-                  <Layout>
-                    <CartPage />
-                  </Layout>
-                }
-              />
+
               <Route
                 path="/profile"
                 element={
-                  <Layout>
-                    <ProfilePage />
-                  </Layout>
+                  <PrivateRoute>
+                    <Layout>
+                      <ProfilePage />
+                    </Layout>
+                  </PrivateRoute>
                 }
               />
+
+              <Route
+                path="/dashboard"
+                element={
+                  <PrivateRoute allowedRoles={['Student']}>
+                    <Layout>
+                      <DashboardPage />
+                    </Layout>
+                  </PrivateRoute>
+                }
+              />
+
+              <Route
+                path="/payment"
+                element={
+                  <PrivateRoute allowedRoles={['Student']}>
+                    <Layout>
+                      <PaymentPage />
+                    </Layout>
+                  </PrivateRoute>
+                }
+              />
+
+              <Route
+                path="/cart"
+                element={
+                  <PrivateRoute allowedRoles={['Student']}>
+                    <Layout>
+                      <CartPage />
+                    </Layout>
+                  </PrivateRoute>
+                }
+              />
+
+              <Route
+                path="/teacher"
+                element={
+                  <PrivateRoute allowedRoles={['Instructor']}>
+                    <Layout>
+                      <TeacherPage />
+                    </Layout>
+                  </PrivateRoute>
+                }
+              />
+
+              <Route
+                path="/teacher/add"
+                element={
+                  <PrivateRoute allowedRoles={['Instructor']}>
+                    <Layout>
+                      <AddCoursePage />
+                    </Layout>
+                  </PrivateRoute>
+                }
+              />
+
+              <Route
+                path="/teacher/edit/:id"
+                element={
+                  <PrivateRoute allowedRoles={['Instructor']}>
+                    <Layout>
+                      <EditCoursePage />
+                    </Layout>
+                  </PrivateRoute>
+                }
+              />
+
             </Routes>
           </Router>
         </CartProvider>
@@ -151,9 +194,8 @@ const Layout = ({ children }) => {
       <AppNavbar />
       <div className="d-flex flex-grow-1">
         <div
-          className={`border-end ${
-            darkMode ? 'bg-dark text-light' : 'bg-light text-dark'
-          }`}
+          className={`border-end ${darkMode ? 'bg-dark text-light' : 'bg-light text-dark'
+            }`}
           style={{ width: '250px' }}
         >
           <Sidebar />

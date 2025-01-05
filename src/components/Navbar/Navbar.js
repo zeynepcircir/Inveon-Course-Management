@@ -33,6 +33,7 @@ const AppNavbar = () => {
   const toggleNavbar = () => setIsOpen(!isOpen); 
 
   const handleLogout = () => {
+    localStorage.removeItem('token');
     navigate('/login');
   };
 

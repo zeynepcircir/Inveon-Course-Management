@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Nav, NavItem, NavLink, Button, Collapse } from 'reactstrap';
 import { FaBars, FaChalkboardTeacher, FaPlus, FaTachometerAlt } from 'react-icons/fa';
-import { useTheme } from '../../App'; 
+import { useTheme } from '../../App';
 import './Sidebar.css';
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-  const { darkMode } = useTheme(); 
+  const { darkMode } = useTheme();
+  const token = localStorage.getItem('token');
+  const userRoles = token ? JSON.parse(atob(token.split('.')[1])).roles : [];
 
   useEffect(() => {
     const handleResize = () => {
@@ -73,26 +75,30 @@ const Sidebar = () => {
                 <span style={{ fontSize: '1.2rem' }}>Browse</span>
               </NavLink>
             </NavItem>
-            <NavItem className="mb-4">
-              <NavLink
-                href="/dashboard"
-                className="sidebar-link"
-                style={{ color: darkMode ? '#ffffff' : '#333' }}
-              >
-                <FaChalkboardTeacher className="me-2" size={22} />
-                <span style={{ fontSize: '1.2rem' }}>Dashboard</span>
-              </NavLink>
-            </NavItem>
-            <NavItem className="mb-4">
-              <NavLink
-                href="/teacher"
-                className="sidebar-link"
-                style={{ color: darkMode ? '#ffffff' : '#333' }}
-              >
-                <FaPlus className="me-2" size={22} />
-                <span style={{ fontSize: '1.2rem' }}>Teacher Mode</span>
-              </NavLink>
-            </NavItem>
+            {userRoles.includes('Student') && (
+              <NavItem className="mb-4">
+                <NavLink
+                  href="/dashboard"
+                  className="sidebar-link"
+                  style={{ color: darkMode ? '#ffffff' : '#333' }}
+                >
+                  <FaChalkboardTeacher className="me-2" size={22} />
+                  <span style={{ fontSize: '1.2rem' }}>Dashboard</span>
+                </NavLink>
+              </NavItem>
+            )}
+            {userRoles.includes('Instructor') && (
+              <NavItem className="mb-4">
+                <NavLink
+                  href="/teacher"
+                  className="sidebar-link"
+                  style={{ color: darkMode ? '#ffffff' : '#333' }}
+                >
+                  <FaPlus className="me-2" size={22} />
+                  <span style={{ fontSize: '1.2rem' }}>Teacher Mode</span>
+                </NavLink>
+              </NavItem>
+            )}
           </Nav>
         </div>
       </Collapse>

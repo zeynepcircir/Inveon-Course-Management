@@ -12,30 +12,40 @@ import {
   Label,
   Input,
 } from 'reactstrap';
-import { useParams } from 'react-router-dom';
-import courses from '../../data/courses';
+import { useNavigate, useParams } from 'react-router-dom';
+import axiosInstance from '../../api/axios'; 
+import API_ENDPOINTS from '../../api/endpoints'; 
 
 const EditCoursePage = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
   const [courseData, setCourseData] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
-
-  const categories = ['Filming', 'Engineering', 'Accounting', 'Design', 'Marketing'];
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    const course = courses.find((c) => c.id === parseInt(id));
-    if (course) {
-      setCourseData({
-        title: course.title,
-        description: course.description,
-        image: course.image,
-        category: course.category,
-        price: course.price.replace('$', ''),
-      });
-      setPreviewImage(course.image);
-    } else {
-      alert('Course not found!');
-    }
+    const fetchCategories = async () => {
+      try {
+        const response = await axiosInstance.get(API_ENDPOINTS.category.getAll);
+        setCategories(response.data.data); 
+      } catch (error) {
+        console.error('Error fetching courses:', error);
+      }
+    };
+
+    const fetchCourse = async () => {
+      try {
+        const response = await axiosInstance.get(API_ENDPOINTS.course.getById(id));
+        console.log('response.data.data :>> ', response.data.data);
+        setCourseData(response.data.data);
+        setPreviewImage(response.data.data.imageUrl); 
+      } catch (error) {
+        console.error('Error fetching courses:', error);
+      }
+    };
+
+    fetchCategories();
+    fetchCourse();
   }, [id]);
 
   const handleInputChange = (e) => {
@@ -53,9 +63,23 @@ const EditCoursePage = () => {
     }
   };
 
-  const handleSubmit = () => {
-    alert('Course updated successfully!');
-    console.log(courseData);
+  const handleSubmit = async () => {
+    try {
+      const response = await axiosInstance.put(
+        API_ENDPOINTS.course.update(id), { 
+          title: courseData.title,
+          description: courseData.description,
+          price: courseData.price,
+          imageUrl: previewImage,
+          categoryId: courseData.categoryId
+        }
+      );
+      alert("Product is updated succeessfully!");
+      navigate('/teacher');
+      console.log('Edited product: ', response.data.data);
+    } catch (error) {
+      console.error('Error fetching courses:', error);
+    }
   };
 
   if (!courseData) return <p>Loading course data...</p>;
@@ -113,14 +137,14 @@ const EditCoursePage = () => {
                   <Label for="category">Category</Label>
                   <Input
                     type="select"
-                    name="category"
+                    name="categoryId"
                     id="category"
-                    value={courseData.category}
+                    value={courseData.categoryId}
                     onChange={handleInputChange}
                   >
-                    {categories.map((category, index) => (
-                      <option key={index} value={category}>
-                        {category}
+                    {categories.map((category) => (
+                      <option key={category.id} value={category.id}>
+                        {category.name}
                       </option>
                     ))}
                   </Input>

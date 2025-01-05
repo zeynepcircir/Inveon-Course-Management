@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Container,
   Row,
@@ -18,9 +18,10 @@ import {
 } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 import { FaShoppingCart, FaSearch } from 'react-icons/fa';
-import courses from '../../data/courses';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import SliderComponent from '../../components/Slider/Slider';
+import axiosInstance from '../../api/axios'; 
+import API_ENDPOINTS from '../../api/endpoints'; 
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -28,18 +29,42 @@ const HomePage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [currentPage, setCurrentPage] = useState(1);
+  const [courses, setCourses] = useState([]);
+  const [categories, setCategories] = useState([]);
   const itemsPerPage = 6; 
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axiosInstance.get(API_ENDPOINTS.category.getAll);
+        setCategories(['All', ...response.data.data.map(category => category.name)]); 
+      } catch (error) {
+        console.error('Error fetching courses:', error);
+      }
+    };
+    
+    const fetchCourses = async () => {
+      try {
+        const response = await axiosInstance.get(API_ENDPOINTS.course.getAll);
+        console.log('response.data.data :>> ', response.data.data);
+        setCourses(response.data.data); 
+      } catch (error) {
+        console.error('Error fetching courses:', error);
+      }
+    };
+
+    fetchCategories();
+    fetchCourses();
+  }, []);
 
   const handleAddToCart = (course) => {
     alert(`${course.title} has been added to your cart!`);
   };
 
-  const categories = ['All', ...new Set(courses.map((course) => course.category))];
-
   const filteredCourses = courses.filter((course) => {
     const matchesSearch = course.title.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory =
-      selectedCategory === 'All' || course.category === selectedCategory;
+      selectedCategory === 'All' || course.categoryName === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
@@ -122,7 +147,7 @@ const HomePage = () => {
               <CardBody>
                 <CardTitle tag="h5" className="fw-bold">{course.title}</CardTitle>
                 <CardText className="text-muted">
-                  <strong>Category:</strong> {course.category}
+                  <strong>Category:</strong> {course.categoryName}
                   <br />
                   <strong>Price:</strong> {course.price}
                   <br />

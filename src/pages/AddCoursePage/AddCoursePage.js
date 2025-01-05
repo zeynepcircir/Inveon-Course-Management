@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Container,
   Row,
@@ -13,34 +13,57 @@ import {
   Input,
   Progress,
 } from 'reactstrap';
+import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../../api/axios'; 
+import API_ENDPOINTS from '../../api/endpoints'; 
 
 const AddCoursePage = () => {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [courseData, setCourseData] = useState({
     title: '',
     description: '',
-    image: null,
-    category: '',
+    imageUrl: null,
+    categoryId: '',
     price: '',
   });
+  const [categories, setCategories] = useState([]);
 
-  const categories = ['Filming', 'Engineering', 'Accounting', 'Design', 'Marketing'];
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axiosInstance.get(API_ENDPOINTS.category.getAll);
+        setCategories(response.data.data); 
+        console.log("Categories: ", response.data.data)
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
 
+    fetchCategories();
+  }, []);
+  
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setCourseData({ ...courseData, [name]: value });
   };
 
   const handleImageUpload = (e) => {
-    setCourseData({ ...courseData, image: e.target.files[0] });
+    setCourseData({ ...courseData, imageUrl: e.target.files[0].name });
   };
 
   const nextStep = () => setCurrentStep((prev) => prev + 1);
   const prevStep = () => setCurrentStep((prev) => prev - 1);
 
-  const handleSubmit = () => {
-    alert('Course submitted successfully!');
-    console.log(courseData);
+  const handleSubmit = async () => {
+    try {
+      const response = await axiosInstance.post(API_ENDPOINTS.course.create,courseData);
+      alert("Product is created succeessfully!");
+      navigate('/teacher');
+      console.log('Created product: ', response.data.data);
+    } catch (error) {
+      console.error('Error creating course:', error);
+    }
   };
 
   return (
@@ -122,15 +145,15 @@ const AddCoursePage = () => {
                       <Label for="category">Category</Label>
                       <Input
                         type="select"
-                        name="category"
+                        name="categoryId"
                         id="category"
-                        value={courseData.category}
+                        value={courseData.categoryId}
                         onChange={handleInputChange}
                       >
                         <option value="">Select a category</option>
-                        {categories.map((category, index) => (
-                          <option key={index} value={category}>
-                            {category}
+                        {categories.map((category) => (
+                          <option key={category.id} value={category.id}>
+                            {category.name}
                           </option>
                         ))}
                       </Input>

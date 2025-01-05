@@ -4,6 +4,8 @@ import { Form, FormGroup, Label, Input, Button, Row, Col, Card, CardBody } from 
 import { FaUserAlt, FaLock } from 'react-icons/fa';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGraduationCap } from '@fortawesome/free-solid-svg-icons';
+import axiosInstance from '../../api/axios'; 
+import API_ENDPOINTS from '../../api/endpoints'; 
 
 const MinimalNavbar = () => (
   <nav
@@ -30,10 +32,18 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    console.log('Login:', { email, password });
-    navigate('/dashboard');
+    try {
+      const response = await axiosInstance.post(API_ENDPOINTS.auth.login, {
+        email,
+        password,
+      });
+      localStorage.setItem('token', response.data.data.token);
+      navigate('/dashboard'); 
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
   };
 
   return (

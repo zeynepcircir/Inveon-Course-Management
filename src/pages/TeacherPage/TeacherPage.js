@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Container,
   Button,
@@ -10,16 +10,32 @@ import {
 } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 import alertify from 'alertifyjs';
-import courses from '../../data/courses'; 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import axiosInstance from '../../api/axios'; 
+import API_ENDPOINTS from '../../api/endpoints'; 
 
 const TeacherPage = () => {
   const navigate = useNavigate();
 
-  const [filteredCourses, setFilteredCourses] = useState(courses); 
+  const [filteredCourses, setFilteredCourses] = useState([]); 
   const [sortConfig, setSortConfig] = useState({ key: '', direction: 'asc' });
   const [currentPage, setCurrentPage] = useState(1);
+  const [courses, setCourses] = useState([]);
   const itemsPerPage = 5; 
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const response = await axiosInstance.get(API_ENDPOINTS.course.instructorCourses);
+        setCourses(response.data.data); 
+        setFilteredCourses(response.data.data);
+      } catch (error) {
+        console.error('Error fetching courses:', error);
+      }
+    };
+
+    fetchCourses();
+  }, []);
 
   const handleEdit = (id) => {
     navigate(`/teacher/edit/${id}`);
@@ -30,8 +46,16 @@ const TeacherPage = () => {
       .confirm(
         'Delete Course',
         `Are you sure you want to delete the course with ID: ${id}?`,
-        () => {
-          alertify.success('Course deleted successfully!');
+        async () => {
+          try {
+            await axiosInstance.delete(API_ENDPOINTS.course.delete(id));
+            const response = await axiosInstance.get(API_ENDPOINTS.course.instructorCourses);
+            setCourses(response.data.data); 
+            setFilteredCourses(response.data.data);
+            alertify.success('Course deleted successfully!');
+          } catch (error) {
+            alertify.error('Delete operation failed.');
+          }
         },
         () => {
           alertify.error('Delete operation canceled.');
@@ -120,7 +144,7 @@ const TeacherPage = () => {
             <tr key={course.id}>
               <th scope="row">{startIndex + index + 1}</th>
               <td>{course.title}</td>
-              <td>{course.category}</td>
+              <td>{course.categoryName}</td>
               <td>{course.price}</td>
               <td>
                 <Button color="warning" size="sm" className="me-2" onClick={() => handleEdit(course.id)}>
