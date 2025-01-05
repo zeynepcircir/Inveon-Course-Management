@@ -26,15 +26,13 @@ namespace CourseManagement.Repository.Configurations
                 .HasMaxLength(500);
 
             builder.Property(x => x.Level)
-                .IsRequired()
                 .HasConversion<string>();
 
             builder.Property(x => x.Language)
-                .IsRequired()
                 .HasMaxLength(50);
 
             builder.Property(x => x.AverageRating)
-                .HasDefaultValue(0);
+                .HasDefaultValue(0.0);
 
             builder.HasOne(x => x.Instructor)
                 .WithMany(x => x.Courses)

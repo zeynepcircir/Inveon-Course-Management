@@ -298,5 +298,35 @@ namespace CourseManagement.Service.Services
             var courseDto = _mapper.Map<CourseListDTO>(course);
             return ResponseDTO<CourseListDTO>.Success(courseDto, 200);
         }
+
+        public async Task<ResponseDTO<List<CourseListDTO>>> GetInstructorCourses(string? userId)
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                return ResponseDTO<List<CourseListDTO>>.Fail("User ID cannot be null or empty.", 400, true);
+            }
+
+            Instructor? instructor = await _instructorRepository
+                .Where(i => i.UserId == userId)
+                .FirstOrDefaultAsync();
+
+            if (instructor == null)
+            {
+                return ResponseDTO<List<CourseListDTO>>.Fail("Instructor not found.", 404, true);
+            }
+
+            List<Course> courses = await _repository
+                .Where(c => c.InstructorId == instructor.Id)
+                .Include(c => c.Category)
+                .ToListAsync();
+
+            if (!courses.Any())
+            {
+                return ResponseDTO<List<CourseListDTO>>.Fail("No courses found for this instructor.", 404, true);
+            }
+
+            List<CourseListDTO> courseListDtos = _mapper.Map<List<CourseListDTO>>(courses);
+            return ResponseDTO<List<CourseListDTO>>.Success(courseListDtos, 200);
+        }
     }
 }

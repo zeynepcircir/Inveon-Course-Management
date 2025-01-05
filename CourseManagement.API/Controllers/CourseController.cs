@@ -28,11 +28,26 @@ namespace CourseManagement.API.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetByIdAsync(int id)
+        {
+            ResponseDTO<CourseListDTO> response = await _courseService.GetByIdAsync<CourseListDTO>(id);
+            return StatusCode(response.StatusCode, response);
+        }
+
         [HttpGet("enrolledCourses")]
         public async Task<IActionResult> GetEnrolledCoursesAsync()
         {
             ResponseDTO<List<CourseListDTO>> response = 
                 await _courseService.GetEnrolledCourses(User.FindFirst("uid")?.Value);
+            return StatusCode(response.StatusCode, response);
+        }
+
+        [HttpGet("instructorCourses")]
+        public async Task<IActionResult> GetGivenCoursesAsync()
+        {
+            ResponseDTO<List<CourseListDTO>> response =
+                await _courseService.GetInstructorCourses(User.FindFirst("uid")?.Value);
             return StatusCode(response.StatusCode, response);
         }
 

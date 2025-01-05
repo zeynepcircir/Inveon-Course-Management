@@ -10,6 +10,7 @@ namespace CourseManagement.Core.Services
         Task<ResponseDTO<CourseListDTO>> UpdateCourseAsync(int courseId, CourseCreateDTO dto, string? userId);
         Task<ResponseDTO<CourseChapterDTO>> AddChapterToCourseAsync(int courseId, CourseChapterCreateDTO createDto, string? userId);
         Task<ResponseDTO<List<CourseListDTO>>> GetEnrolledCourses(string? userId);
+        Task<ResponseDTO<List<CourseListDTO>>> GetInstructorCourses(string? userId);
         Task<ResponseDTO<List<CourseChapterDTO>>> GetCourseChapters(int courseId);
         Task<ResponseDTO<List<StudentChapterDTO>>> GetStudentCourseChapters(int courseId, string? userId);
     }

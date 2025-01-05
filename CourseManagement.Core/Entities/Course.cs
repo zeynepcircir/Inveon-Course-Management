@@ -8,9 +8,9 @@ namespace CourseManagement.Core.Entities
         public string Description { get; set; }
         public decimal Price { get; set; }
         public string ImageUrl { get; set; }
-        public CourseLevel Level { get; set; } 
-        public string Language { get; set; }
-        public double AverageRating { get; set; }
+        public CourseLevel? Level { get; set; } 
+        public string? Language { get; set; }
+        public double? AverageRating { get; set; }
         public int InstructorId { get; set; }
         public Instructor Instructor { get; set; }
         public int CategoryId { get; set; }

@@ -86,6 +86,18 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder.AllowAnyOrigin() 
+                   .AllowAnyHeader() 
+                   .AllowAnyMethod(); 
+        });
+});
+
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -103,6 +115,8 @@ using (var scope = app.Services.CreateScope())
                                            unitOfWork);
     await dbSeeder.SeedAsync();
 }
+
+app.UseCors("AllowAll");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

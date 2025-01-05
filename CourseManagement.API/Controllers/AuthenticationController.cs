@@ -1,5 +1,4 @@
-﻿using Azure;
-using CourseManagement.Core.DTOs;
+﻿using CourseManagement.Core.DTOs;
 using CourseManagement.Core.Services;
 using Microsoft.AspNetCore.Mvc;
 
