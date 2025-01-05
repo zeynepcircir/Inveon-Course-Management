@@ -22,11 +22,6 @@ const CourseDetail = () => {
     { id: 4, title: 'Outro', duration: '00:45', isLocked: true },
   ];
 
-  const handlePurchase = () => {
-    navigate('/payment', { state: { courseId, price: 15.0 } }); 
-  };
-  
-
   const handleVideoClick = (chapter) => {
     if (!isPurchased && chapter.isLocked) {
       alert('Bu bölümü izlemek için kursu satın almanız gerekiyor.');
@@ -93,14 +88,6 @@ const CourseDetail = () => {
                 <i className="bi bi-lock-fill" style={{ fontSize: '3rem', color: '#aaa' }}></i>
                 <p className="ms-3 text-muted">This chapter is locked</p>
               </div>
-              <Button
-                color="success"
-                size="lg"
-                className="mt-4"
-                onClick={handlePurchase}
-              >
-                Enroll for $15.00
-              </Button>
             </div>
           )}
         </Col>

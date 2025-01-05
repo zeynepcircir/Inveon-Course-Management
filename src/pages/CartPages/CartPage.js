@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Container,
   Row,
@@ -7,16 +7,34 @@ import {
   Button,
 } from 'reactstrap';
 import { FaTrash } from 'react-icons/fa';
-import courses from '../../data/courses'; 
+import axiosInstance from '../../api/axios';
+import API_ENDPOINTS from '../../api/endpoints';
+import { useNavigate } from 'react-router-dom';
 
 const CartPage = () => {
-  const [cart, setCart] = useState(
-    courses.slice(0, 3).map((course) => ({
-      ...course,
-      quantity: 1,
-      price: course.price === 'Free' ? 0 : parseFloat(course.price.replace('$', '')),
-    }))
+  const navigate = useNavigate();
+  const [cart, setCart] = useState([]);
+  const totalAmount = cart.reduce(
+    (total, item) => total + item.price,
+    0
   );
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const response = await axiosInstance.get(API_ENDPOINTS.course.getCartCourses);
+        setCart(response.data.data);
+      } catch (error) {
+        console.error('Error fetching courses:', error);
+      }
+    };
+
+    fetchCourses();
+  }, []);
+
+  const handlePayment = async () => {
+    navigate("/payment");
+  };
 
   const handleRemove = (id) => {
     setCart(cart.filter((item) => item.id !== id));
@@ -25,11 +43,6 @@ const CartPage = () => {
   const handleClearCart = () => {
     setCart([]);
   };
-
-  const totalAmount = cart.reduce(
-    (total, item) => total + item.price * item.quantity,
-    0
-  );
 
   return (
     <Container className="py-5">
@@ -47,8 +60,6 @@ const CartPage = () => {
                 <th>Title</th>
                 <th>Category</th>
                 <th>Price</th>
-                <th>Quantity</th>
-                <th>Total</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -63,10 +74,8 @@ const CartPage = () => {
                     />
                   </td>
                   <td>{item.title}</td>
-                  <td>{item.category}</td>
+                  <td>{item.categoryName}</td>
                   <td>${item.price.toFixed(2)}</td>
-                  <td>{item.quantity}</td>
-                  <td>${(item.price * item.quantity).toFixed(2)}</td>
                   <td>
                     <Button
                       color="danger"
@@ -83,8 +92,8 @@ const CartPage = () => {
 
           <Row className="justify-content-between align-items-center">
             <Col md={6}>
-              <Button color="warning" onClick={handleClearCart}>
-                Clear Cart
+              <Button color="info" onClick={handlePayment}>
+                Make Payment
               </Button>
             </Col>
             <Col md={6} className="text-end">

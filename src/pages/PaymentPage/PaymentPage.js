@@ -1,14 +1,34 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Form, FormGroup, Label, Input, Button, Card } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import axiosInstance from '../../api/axios';
+import API_ENDPOINTS from '../../api/endpoints';
+import { useNavigate } from 'react-router-dom';
 
 const PaymentPage = () => {
+  const navigate = useNavigate();
+
   const [cardDetails, setCardDetails] = useState({
     fullName: '',
     cardNumber: '',
     expiryDate: '',
     cvv: '',
   });
+
+  const handlePayment = async (e) => {
+    e.preventDefault();
+    try {
+      await axiosInstance.post(API_ENDPOINTS.payment.makePayment, {
+        cvv: cardDetails.cvv,
+        expiryDate: cardDetails.expiryDate,
+        cardNumber: cardDetails.cardNumber
+      });
+      alert("Payment completed successfully!")
+      navigate('/dashboard');
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -20,7 +40,7 @@ const PaymentPage = () => {
       <Row>
         <Col md={6} className="mb-4">
           <h3 className="mb-4">Payment Details</h3>
-          <Form>
+          <Form onSubmit={handlePayment}>
             <FormGroup>
               <Label for="fullName">Card Holder Full Name</Label>
               <Input

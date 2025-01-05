@@ -20,8 +20,8 @@ import { useNavigate } from 'react-router-dom';
 import { FaShoppingCart, FaSearch } from 'react-icons/fa';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import SliderComponent from '../../components/Slider/Slider';
-import axiosInstance from '../../api/axios'; 
-import API_ENDPOINTS from '../../api/endpoints'; 
+import axiosInstance from '../../api/axios';
+import API_ENDPOINTS from '../../api/endpoints';
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -31,23 +31,23 @@ const HomePage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [courses, setCourses] = useState([]);
   const [categories, setCategories] = useState([]);
-  const itemsPerPage = 6; 
+  const itemsPerPage = 6;
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const response = await axiosInstance.get(API_ENDPOINTS.category.getAll);
-        setCategories(['All', ...response.data.data.map(category => category.name)]); 
+        setCategories(['All', ...response.data.data.map(category => category.name)]);
       } catch (error) {
         console.error('Error fetching courses:', error);
       }
     };
-    
+
     const fetchCourses = async () => {
       try {
         const response = await axiosInstance.get(API_ENDPOINTS.course.getAll);
         console.log('response.data.data :>> ', response.data.data);
-        setCourses(response.data.data); 
+        setCourses(response.data.data);
       } catch (error) {
         console.error('Error fetching courses:', error);
       }
@@ -57,8 +57,13 @@ const HomePage = () => {
     fetchCourses();
   }, []);
 
-  const handleAddToCart = (course) => {
-    alert(`${course.title} has been added to your cart!`);
+  const handleAddToCart = async (course) => {
+    try {
+      await axiosInstance.post(API_ENDPOINTS.course.addToCart(course.id));
+      alert(`${course.title} has been added to your cart!`);
+    } catch (error) {
+      console.error('Error fetching courses:', error);
+    }
   };
 
   const filteredCourses = courses.filter((course) => {
@@ -74,48 +79,48 @@ const HomePage = () => {
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
-    window.scrollTo(0, 0); 
+    window.scrollTo(0, 0);
   };
 
   return (
     <Container className="py-5">
-       <Container fluid className="mb-5">
-        <SliderComponent/>
+      <Container fluid className="mb-5">
+        <SliderComponent />
       </Container>
       <div className="mb-4 text-center">
-      <InputGroup
-        style={{
-          maxWidth: '600px',
-          margin: '0 auto',
-          borderRadius: '20px', 
-          overflow: 'hidden', 
-          boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)', 
-        }}
-      >
-        <Input
-          type="text"
-          placeholder="Search for a course"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+        <InputGroup
           style={{
-            border: 'none',
-            borderRadius: '0', 
-            boxShadow: 'none', 
-          }}
-        />
-        <InputGroupText
-          style={{
-            backgroundColor: '#007bff', 
-            color: '#fff', 
-            border: 'none',
-            borderRadius: '0', 
-            cursor: 'pointer',
+            maxWidth: '600px',
+            margin: '0 auto',
+            borderRadius: '20px',
+            overflow: 'hidden',
+            boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
           }}
         >
-          <FaSearch />
-        </InputGroupText>
-      </InputGroup>
-    </div>
+          <Input
+            type="text"
+            placeholder="Search for a course"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={{
+              border: 'none',
+              borderRadius: '0',
+              boxShadow: 'none',
+            }}
+          />
+          <InputGroupText
+            style={{
+              backgroundColor: '#007bff',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '0',
+              cursor: 'pointer',
+            }}
+          >
+            <FaSearch />
+          </InputGroupText>
+        </InputGroup>
+      </div>
       <div className="mb-4 text-center">
         {categories.map((category) => (
           <Badge
@@ -125,7 +130,7 @@ const HomePage = () => {
             className="mx-1"
             onClick={() => {
               setSelectedCategory(category);
-              setCurrentPage(1); 
+              setCurrentPage(1);
             }}
             style={{ cursor: 'pointer' }}
           >
