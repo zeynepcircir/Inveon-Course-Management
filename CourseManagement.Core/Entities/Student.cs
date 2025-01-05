@@ -2,9 +2,9 @@
 {
     public class Student : BaseEntity
     {
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
         public string? ProfilePictureUrl { get; set; }
-        public ApplicationUser User { get; set; }
+        public ApplicationUser? User { get; set; }
         public ICollection<StudentCourse>? EnrolledCourses { get; set; }
         public ICollection<StudentChapter>? StudentChapters { get; set; }
         public ICollection<Review>? Reviews { get; set; }

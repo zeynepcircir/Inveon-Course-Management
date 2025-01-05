@@ -237,7 +237,7 @@ namespace CourseManagement.Repository.Migrations
                             CategoryId = 1,
                             CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Learn the basics of programming with this beginner-friendly course.",
-                            ImageUrl = "programming-course.jpg",
+                            ImageUrl = "https://images.pexels.com/photos/546819/pexels-photo-546819.jpeg?auto=compress&cs=tinysrgb&w=600",
                             InstructorId = 1,
                             Language = "English",
                             Level = "Beginner",
@@ -251,7 +251,7 @@ namespace CourseManagement.Repository.Migrations
                             CategoryId = 2,
                             CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Take your design skills to the next level with this advanced course.",
-                            ImageUrl = "design-course.jpg",
+                            ImageUrl = "https://images.pexels.com/photos/6704953/pexels-photo-6704953.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
                             InstructorId = 1,
                             Language = "English",
                             Level = "Advanced",
@@ -265,7 +265,7 @@ namespace CourseManagement.Repository.Migrations
                             CategoryId = 3,
                             CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Master the art of digital marketing with this comprehensive course.",
-                            ImageUrl = "marketing-course.jpg",
+                            ImageUrl = "https://images.pexels.com/photos/7688336/pexels-photo-7688336.jpeg?auto=compress&cs=tinysrgb&w=600",
                             InstructorId = 1,
                             Language = "English",
                             Level = "Intermediate",
@@ -279,7 +279,7 @@ namespace CourseManagement.Repository.Migrations
                             CategoryId = 4,
                             CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Learn the essentials of starting and managing your own business.",
-                            ImageUrl = "business-course.jpg",
+                            ImageUrl = "https://images.pexels.com/photos/16846873/pexels-photo-16846873/free-photo-of-woman-in-green-suit-sitting-and-working-on-laptop.jpeg?auto=compress&cs=tinysrgb&w=600",
                             InstructorId = 1,
                             Language = "English",
                             Level = "Beginner",
@@ -293,7 +293,7 @@ namespace CourseManagement.Repository.Migrations
                             CategoryId = 5,
                             CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Explore the world of scientific research with practical techniques.",
-                            ImageUrl = "science-course.jpg",
+                            ImageUrl = "https://images.pexels.com/photos/8443080/pexels-photo-8443080.jpeg?auto=compress&cs=tinysrgb&w=600",
                             InstructorId = 1,
                             Language = "English",
                             Level = "Intermediate",
@@ -546,7 +546,6 @@ namespace CourseManagement.Repository.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Website")
@@ -556,9 +555,20 @@ namespace CourseManagement.Repository.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("UserId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("Instructors");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Biography = "Experienced instructor in software development.",
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ProfilePictureUrl = "instructor1-profile.jpg",
+                            Website = "https://instructor1.com"
+                        });
                 });
 
             modelBuilder.Entity("CourseManagement.Core.Entities.Payment", b =>
@@ -704,15 +714,23 @@ namespace CourseManagement.Repository.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("UserId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("Students");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ProfilePictureUrl = "student1-profile.jpg"
+                        });
                 });
 
             modelBuilder.Entity("CourseManagement.Core.Entities.StudentChapter", b =>
@@ -1053,8 +1071,7 @@ namespace CourseManagement.Repository.Migrations
                     b.HasOne("CourseManagement.Core.Entities.ApplicationUser", "User")
                         .WithOne()
                         .HasForeignKey("CourseManagement.Core.Entities.Instructor", "UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("User");
                 });
@@ -1110,8 +1127,7 @@ namespace CourseManagement.Repository.Migrations
                     b.HasOne("CourseManagement.Core.Entities.ApplicationUser", "User")
                         .WithOne()
                         .HasForeignKey("CourseManagement.Core.Entities.Student", "UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("User");
                 });

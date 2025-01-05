@@ -3,6 +3,7 @@ using CourseManagement.Core.Entities;
 using CourseManagement.Core.Repositories;
 using CourseManagement.Core.UnitOfWorks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace CourseManagement.Repository.Seeds
 {
@@ -57,15 +58,14 @@ namespace CourseManagement.Repository.Seeds
                 {
                     await _userManager.AddToRoleAsync(studentUser, AuthConstant.Roles.Student.ToString());
 
-                    var student = new Student
+                    var student = await _studentRepository.Where(s => s.Id == 1).FirstOrDefaultAsync();
+                    if (student != null)
                     {
-                        UserId = studentUser.Id,
-                        ProfilePictureUrl = "student-profile.jpg",
-                        User = studentUser
-                    };
+                        student.UserId = studentUser.Id;
 
-                    await _studentRepository.AddAsync(student);
-                    await _unitOfWork.CommitAsync();
+                        _studentRepository.Update(student);
+                        await _unitOfWork.CommitAsync();
+                    }
                 }
             }
 
@@ -87,19 +87,17 @@ namespace CourseManagement.Repository.Seeds
                 {
                     await _userManager.AddToRoleAsync(instructorUser, AuthConstant.Roles.Instructor.ToString());
 
-                    var instructor = new Instructor
+                    var instructor = await _instructorRepository.Where(i => i.Id == 1).FirstOrDefaultAsync();
+                    if (instructor != null)
                     {
-                        UserId = instructorUser.Id,
-                        Biography = "This is an instructor biography.",
-                        ProfilePictureUrl = "instructor-profile.jpg",
-                        Website = "https://instructorwebsite.com",
-                        User = instructorUser
-                    };
+                        instructor.UserId = instructorUser.Id;
 
-                    await _instructorRepository.AddAsync(instructor);
-                    await _unitOfWork.CommitAsync();
+                        _instructorRepository.Update(instructor);
+                        await _unitOfWork.CommitAsync();
+                    }
                 }
             }
         }
+
     }
 }
