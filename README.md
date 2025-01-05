@@ -92,5 +92,12 @@ cd Inveon-Course-Management
 | --- | --- | --- |
 | ![cart.png](https://github.com/zeynepcircir/Inveon-Course-Management/blob/master/photos/cart.png) | ![addcourse.png](https://github.com/zeynepcircir/Inveon-Course-Management/blob/master/photos/addcourse.png) | ![about.png](https://github.com/zeynepcircir/Inveon-Course-Management/blob/master/photos/about.png) |
 
+| ER Diagram | ER Diagram | Swagger |
+| --- | --- | --- |
+| ![cart.png](![6c8ccce6-f7a8-47dd-b864-591c694c07ac](https://github.com/user-attachments/assets/3ec49cca-d75c-42dd-b4f9-55cf592d5247)
+) | ![addcourse.png](![b93f19c5-5b9c-4ef7-9f34-88b4c1bc8be8](https://github.com/user-attachments/assets/14d45a96-0c1b-4800-812f-0e2f9446f665)
+) | ![about.png](![c104bb9a-b1c2-4dfd-849a-c8658e4127bb](https://github.com/user-attachments/assets/89d28e4e-80d5-4b65-bc52-3b02e475f261)
+) |
+
 </div>
 
