@@ -10,23 +10,21 @@ import {
 } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 import alertify from 'alertifyjs';
-import courses from '../../data/courses'; // Veriyi courses.js'den al
+import courses from '../../data/courses'; 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const TeacherPage = () => {
   const navigate = useNavigate();
 
-  const [filteredCourses, setFilteredCourses] = useState(courses); // Filtrelenmiş kurslar
+  const [filteredCourses, setFilteredCourses] = useState(courses); 
   const [sortConfig, setSortConfig] = useState({ key: '', direction: 'asc' });
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // Her sayfada gösterilecek eleman sayısı
+  const itemsPerPage = 5; 
 
-  // Edit işlemi
   const handleEdit = (id) => {
     navigate(`/teacher/edit/${id}`);
   };
 
-  // Delete işlemi
   const handleDelete = (id) => {
     alertify
       .confirm(
@@ -44,21 +42,18 @@ const TeacherPage = () => {
       .set('position', 'top-right');
   };
 
-  // Add New Course
   const handleAddCourse = () => {
     navigate('/teacher/add');
   };
 
-  // Filtreleme
   const handleFilter = (key, value) => {
     const filtered = courses.filter((course) =>
       course[key].toLowerCase().includes(value.toLowerCase())
     );
     setFilteredCourses(filtered);
-    setCurrentPage(1); // Filtrelemeden sonra ilk sayfaya dön
+    setCurrentPage(1); 
   };
 
-  // Sıralama
   const handleSort = (key) => {
     let direction = 'asc';
     if (sortConfig.key === key && sortConfig.direction === 'asc') {
@@ -73,23 +68,20 @@ const TeacherPage = () => {
     setSortConfig({ key, direction });
   };
 
-  // Sayfalama
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentPageData = filteredCourses.slice(startIndex, startIndex + itemsPerPage);
   const totalPages = Math.ceil(filteredCourses.length / itemsPerPage);
 
-  // Sayfa değişiminde işlem
   const handlePageChange = (page) => {
     setCurrentPage(page);
-    window.scrollTo(0, 0); // Sayfa değişiminde yukarı kaydır
+    window.scrollTo(0, 0); 
   };
 
-  // Sıralama Okları
   const getSortIcon = (key) => {
     if (sortConfig.key === key) {
       return sortConfig.direction === 'asc' ? '▲' : '▼';
     }
-    return '▲'; // Varsayılan sıralama yukarı
+    return '▲'; 
   };
 
   return (
@@ -143,7 +135,6 @@ const TeacherPage = () => {
         </tbody>
       </Table>
 
-      {/* Pagination */}
       <div className="mt-4 d-flex justify-content-center">
         <Pagination>
           <PaginationItem disabled={currentPage === 1}>

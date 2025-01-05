@@ -28,17 +28,14 @@ const HomePage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6; // Sayfa başına gösterilecek kurs sayısı
+  const itemsPerPage = 6; 
 
-  // Sepete ekleme işlemi
   const handleAddToCart = (course) => {
     alert(`${course.title} has been added to your cart!`);
   };
 
-  // Tüm kategorileri courses.js'den çek
   const categories = ['All', ...new Set(courses.map((course) => course.category))];
 
-  // Arama ve filtreleme işlemi
   const filteredCourses = courses.filter((course) => {
     const matchesSearch = course.title.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory =
@@ -46,37 +43,54 @@ const HomePage = () => {
     return matchesSearch && matchesCategory;
   });
 
-  // Pagination işlemi
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentPageData = filteredCourses.slice(startIndex, startIndex + itemsPerPage);
   const totalPages = Math.ceil(filteredCourses.length / itemsPerPage);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
-    window.scrollTo(0, 0); // Sayfa değişiminde yukarı kaydır
+    window.scrollTo(0, 0); 
   };
 
   return (
     <Container className="py-5">
        <Container fluid className="mb-5">
-      <SliderComponent />
-    </Container>
-      {/* Arama Çubuğu */}
+        <SliderComponent/>
+      </Container>
       <div className="mb-4 text-center">
-        <InputGroup style={{ maxWidth: '600px', margin: '0 auto' }}>
-          <Input
-            type="text"
-            placeholder="Search for a course"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <InputGroupText>
-            <FaSearch />
-          </InputGroupText>
-        </InputGroup>
-      </div>
-
-      {/* Kategoriler */}
+      <InputGroup
+        style={{
+          maxWidth: '600px',
+          margin: '0 auto',
+          borderRadius: '20px', 
+          overflow: 'hidden', 
+          boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)', 
+        }}
+      >
+        <Input
+          type="text"
+          placeholder="Search for a course"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={{
+            border: 'none',
+            borderRadius: '0', 
+            boxShadow: 'none', 
+          }}
+        />
+        <InputGroupText
+          style={{
+            backgroundColor: '#007bff', 
+            color: '#fff', 
+            border: 'none',
+            borderRadius: '0', 
+            cursor: 'pointer',
+          }}
+        >
+          <FaSearch />
+        </InputGroupText>
+      </InputGroup>
+    </div>
       <div className="mb-4 text-center">
         {categories.map((category) => (
           <Badge
@@ -86,7 +100,7 @@ const HomePage = () => {
             className="mx-1"
             onClick={() => {
               setSelectedCategory(category);
-              setCurrentPage(1); // Kategori değiştiğinde ilk sayfaya dön
+              setCurrentPage(1); 
             }}
             style={{ cursor: 'pointer' }}
           >
@@ -95,7 +109,6 @@ const HomePage = () => {
         ))}
       </div>
 
-      {/* Kurslar */}
       <Row className="gx-4 gy-5">
         {currentPageData.map((course) => (
           <Col md={4} key={course.id}>
@@ -138,7 +151,6 @@ const HomePage = () => {
         ))}
       </Row>
 
-      {/* Pagination */}
       <div className="mt-4 d-flex justify-content-center">
         <Pagination>
           <PaginationItem disabled={currentPage === 1}>

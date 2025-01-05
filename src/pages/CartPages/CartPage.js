@@ -7,28 +7,25 @@ import {
   Button,
 } from 'reactstrap';
 import { FaTrash } from 'react-icons/fa';
-import courses from '../../data/courses'; // Örnek veri
+import courses from '../../data/courses'; 
 
 const CartPage = () => {
   const [cart, setCart] = useState(
     courses.slice(0, 3).map((course) => ({
       ...course,
       quantity: 1,
-      price: course.price === 'Free' ? 0 : parseFloat(course.price.replace('$', '')), // Convert price to a number
+      price: course.price === 'Free' ? 0 : parseFloat(course.price.replace('$', '')),
     }))
   );
 
-  // Ürün Silme
   const handleRemove = (id) => {
     setCart(cart.filter((item) => item.id !== id));
   };
 
-  // Sepeti Temizleme
   const handleClearCart = () => {
     setCart([]);
   };
 
-  // Toplam Tutar
   const totalAmount = cart.reduce(
     (total, item) => total + item.price * item.quantity,
     0

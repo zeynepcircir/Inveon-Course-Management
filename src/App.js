@@ -24,13 +24,11 @@ export const useTheme = () => useContext(ThemeContext);
 
 function App() {
   const [darkMode, setDarkMode] = useState(() => {
-    // LocalStorage'den dark mode durumunu al
     const savedTheme = localStorage.getItem('darkMode');
     return savedTheme ? JSON.parse(savedTheme) : false;
   });
 
   useEffect(() => {
-    // Dark mode durumunu localStorage'e kaydet
     localStorage.setItem('darkMode', JSON.stringify(darkMode));
   }, [darkMode]);
 
@@ -45,51 +43,126 @@ function App() {
           backgroundColor: darkMode ? '#1e1e1e' : '#f8f9fa',
           color: darkMode ? '#ffffff' : '#000000',
           minHeight: '100vh',
+          paddingTop: '50px',
         }}
       >
         <CartProvider>
           <Router>
-            <div className="d-flex flex-column" style={{ minHeight: '100vh' }}>
-              {/* Navbar */}
-              <AppNavbar />
-              
-              <div className="d-flex flex-grow-1">
-                {/* Sidebar */}
-                <div
-                  className={`border-end ${
-                    darkMode ? 'bg-dark text-light' : 'bg-light text-dark'
-                  }`}
-                  style={{ width: '250px' }}
-                >
-                  <Sidebar />
-                </div>
-                
-                {/* Main Content */}
-                <div className="flex-grow-1 p-4">
-                  <Routes>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/course/:id" element={<CourseDetailPage />} />
-                    <Route path="/login" element={<LoginPage />} />
-                    <Route path="/browse" element={<HomePage />} />
-                    <Route path="/register" element={<RegisterPage />} />
-                    <Route path="/dashboard" element={<DashboardPage />} />
-                    <Route path="/teacher" element={<TeacherPage />} />
-                    <Route path="/teacher/add" element={<AddCoursePage />} />
-                    <Route path="/teacher/edit/:id" element={<EditCoursePage />} />
-                    <Route path="/payment" element={<PaymentPage />} />
-                    <Route path="/about" element={<AboutPage />} />
-                    <Route path="/cart" element={<CartPage />} />
-                    <Route path="/profile" element={<ProfilePage/>} />
-                  </Routes>
-                  <Footer />
-                </div>
-              </div>
-            </div>
+            <Routes>
+              {/* Sayfalar: Navbar, Sidebar ve Footer olmadan */}
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+
+              {/* Diğer sayfalar: Navbar, Sidebar ve Footer ile */}
+              <Route
+                path="/"
+                element={
+                  <Layout>
+                    <HomePage />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/course/:id"
+                element={
+                  <Layout>
+                    <CourseDetailPage />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/dashboard"
+                element={
+                  <Layout>
+                    <DashboardPage />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/teacher"
+                element={
+                  <Layout>
+                    <TeacherPage />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/teacher/add"
+                element={
+                  <Layout>
+                    <AddCoursePage />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/teacher/edit/:id"
+                element={
+                  <Layout>
+                    <EditCoursePage />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/payment"
+                element={
+                  <Layout>
+                    <PaymentPage />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/about"
+                element={
+                  <Layout>
+                    <AboutPage />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/cart"
+                element={
+                  <Layout>
+                    <CartPage />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <Layout>
+                    <ProfilePage />
+                  </Layout>
+                }
+              />
+            </Routes>
           </Router>
         </CartProvider>
       </div>
     </ThemeContext.Provider>
   );
 }
+
+// Layout bileşeni: Navbar, Sidebar ve Footer için ortak yapı
+const Layout = ({ children }) => {
+  const { darkMode } = useTheme();
+
+  return (
+    <div className="d-flex flex-column" style={{ minHeight: '100vh' }}>
+      <AppNavbar />
+      <div className="d-flex flex-grow-1">
+        <div
+          className={`border-end ${
+            darkMode ? 'bg-dark text-light' : 'bg-light text-dark'
+          }`}
+          style={{ width: '250px' }}
+        >
+          <Sidebar />
+        </div>
+        <div className="flex-grow-1 p-4">{children}</div>
+      </div>
+      <Footer />
+    </div>
+  );
+};
 
 export default App;

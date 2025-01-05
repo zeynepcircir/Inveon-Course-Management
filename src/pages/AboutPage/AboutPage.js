@@ -15,7 +15,6 @@ const AboutPage = () => {
         </Col>
       </Row>
 
-      {/* Mission and Vision */}
       <Row className="gy-4">
         <Col md={6}>
           <Card className="shadow-sm">
@@ -42,7 +41,6 @@ const AboutPage = () => {
         </Col>
       </Row>
 
-      {/* Team Members */}
       <Row className="mt-5">
         <Col className="text-center mb-4">
           <h2 className="fw-bold">Meet Our Team</h2>
@@ -96,7 +94,6 @@ const AboutPage = () => {
         </Col>
       </Row>
 
-      {/* Footer Information */}
       <Row className="mt-5">
         <Col className="text-center">
           <p className="text-muted">&copy; 2025 Course Management. All rights reserved.</p>

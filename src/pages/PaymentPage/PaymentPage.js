@@ -18,7 +18,6 @@ const PaymentPage = () => {
   return (
     <Container className="py-5" style={{ marginTop: '50px' }}>
       <Row>
-        {/* Sol Kısım - Input Alanları */}
         <Col md={6} className="mb-4">
           <h3 className="mb-4">Payment Details</h3>
           <Form>
@@ -85,7 +84,6 @@ const PaymentPage = () => {
           </Form>
         </Col>
 
-        {/* Sağ Kısım - Kart Görünümü */}
         <Col md={6}>
           <Card
             className="p-3 shadow-sm"

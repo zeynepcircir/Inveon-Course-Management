@@ -14,7 +14,7 @@ const CourseDetail = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();
 
-  const [isPurchased, setIsPurchased] = useState(false); // Kurs satın alınmış mı kontrolü
+  const [isPurchased, setIsPurchased] = useState(false);
   const chapters = [
     { id: 1, title: 'Introduction', duration: '01:05', isLocked: false },
     { id: 2, title: 'Deep Dive', duration: '03:15', isLocked: true },
@@ -23,7 +23,7 @@ const CourseDetail = () => {
   ];
 
   const handlePurchase = () => {
-    navigate('/payment', { state: { courseId, price: 15.0 } }); // Payment sayfasına yönlendir
+    navigate('/payment', { state: { courseId, price: 15.0 } }); 
   };
   
 

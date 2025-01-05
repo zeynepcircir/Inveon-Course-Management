@@ -1,27 +1,28 @@
 import React from 'react';
 import { Container, Row, Col } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useTheme } from '../../App'; // Dark mode context
+import { useTheme } from '../../App'; 
+import { right } from '@popperjs/core';
 
 const Footer = () => {
-  const { darkMode } = useTheme(); // Dark mode durumunu al
+  const { darkMode } = useTheme(); 
 
   return (
     <footer
       style={{
-        background: darkMode ? '#343a40' : '#f8f9fa', // Dark mode için daha açık bir koyu renk
-        color: darkMode ? '#adb5bd' : '#6c757d', // Yazı rengi
+        background: darkMode ? '#343a40' : '#f8f9fa', 
+        color: darkMode ? '#adb5bd' : '#6c757d', 
         borderTop: darkMode ? '1px solid #495057' : '1px solid #dee2e6',
         borderRadius: '10px 10px 0 0',
         boxShadow: '0 -2px 5px rgba(0, 0, 0, 0.1)',
         fontSize: '0.85rem',
         padding: '10px 15px',
         marginTop: '50px',
+        marginLeft: '15.5rem',
       }}
     >
       <Container>
         <Row>
-          {/* Logo and Slogan */}
           <Col md={4} sm={12} className="mb-2">
             <h6 className={`fw-bold mb-1 ${darkMode ? 'text-light' : 'text-dark'}`}>
               Course Management
@@ -31,7 +32,6 @@ const Footer = () => {
             </p>
           </Col>
 
-          {/* Quick Links */}
           <Col md={4} sm={12} className="mb-2">
             <h6 className={`fw-bold mb-1 ${darkMode ? 'text-light' : 'text-dark'}`}>
               Quick Links
@@ -55,8 +55,6 @@ const Footer = () => {
               </li>
             </ul>
           </Col>
-
-          {/* Contact Us */}
           <Col md={4} sm={12} className="mb-2">
             <h6 className={`fw-bold mb-1 ${darkMode ? 'text-light' : 'text-dark'}`}>
               Contact Us

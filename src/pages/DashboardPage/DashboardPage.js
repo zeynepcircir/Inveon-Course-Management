@@ -6,19 +6,16 @@ import courses from '../../data/courses';
 const DashboardPage = () => {
   const navigate = useNavigate();
 
-  // Satın alınan ve satın alınmayan kursları ayır
   const purchasedCourses = courses.filter((course) => course.purchased);
 
   return (
     <Container className="py-5">
-      {/* Satın Alınan Kurslar */}
       <section className="mb-5">
         {purchasedCourses.length > 0 ? (
           <Row>
             {purchasedCourses.map((course) => (
               <Col md={4} className="mb-4" key={course.id}>
                 <Card className="shadow-sm border-0">
-                  {/* Görsel: Bootstrap sınıfları ve sabit boyutlar */}
                   <img 
                     src={course.image} 
                     alt={course.title} 

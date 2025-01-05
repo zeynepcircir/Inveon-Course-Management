@@ -24,7 +24,6 @@ const AddCoursePage = () => {
     price: '',
   });
 
-  // Dropdown için kategoriler
   const categories = ['Filming', 'Engineering', 'Accounting', 'Design', 'Marketing'];
 
   const handleInputChange = (e) => {
