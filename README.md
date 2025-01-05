@@ -95,9 +95,8 @@ cd Inveon-Course-Management
 | ER Diagram | ER Diagram | Swagger |
 | --- | --- | --- |
 | ![cart.png](https://github.com/user-attachments/assets/3ec49cca-d75c-42dd-b4f9-55cf592d5247)
-) | ![addcourse.png](https://github.com/user-attachments/assets/14d45a96-0c1b-4800-812f-0e2f9446f665)
-) | ![about.png](https://github.com/user-attachments/assets/89d28e4e-80d5-4b65-bc52-3b02e475f261)
-) |
+| ![addcourse.png](https://github.com/user-attachments/assets/14d45a96-0c1b-4800-812f-0e2f9446f665)
+| ![about.png](https://github.com/user-attachments/assets/89d28e4e-80d5-4b65-bc52-3b02e475f261) |
 
 </div>
 
