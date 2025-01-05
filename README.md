@@ -46,11 +46,11 @@ cd Inveon-Course-Management
 
 <div align="center">
 
-| Splash Screen  | Course List | Category | 
+| Login Screen  | Register Screen | Dashboard Screen | 
 | ------------- | ------------- | ------------- |
 | ![login.png](https://github.com/zeynepcircir/Inveon-Course-Management/blob/master/photos/login.png) | ![register.png](https://github.com/zeynepcircir/Inveon-Course-Management/blob/master/photos/register.png)  | ![slider.png](https://github.com/zeynepcircir/Inveon-Course-Management/blob/master/photos/slider.png)  |
 
-| Search  | Course Detail | 
+| Browse Screen | Payment Screen | 
 | ------------- | ------------- |
 | ![dashboard.png](https://github.com/zeynepcircir/Inveon-Course-Management/blob/master/photos/dashboard.png) | ![payment.png](https://github.com/zeynepcircir/Inveon-Course-Management/blob/master/photos/payment.png) | 
 
@@ -66,11 +66,11 @@ cd Inveon-Course-Management
 
 <div align="center">
 
-| Bookmark  | Searching | Filtering  | Bookmark All |
+| Teacher Mode Screen  | Courses | Dark Mode | Course Chapters Screen |
 | ------------- | ------------- | ------------- | ------------- |
 | ![teachermode.png](https://github.com/zeynepcircir/Inveon-Course-Management/blob/master/photos/teachermode.png) | ![browse.png](https://github.com/zeynepcircir/Inveon-Course-Management/blob/master/photos/browse.png)  | ![dark.png](https://github.com/zeynepcircir/Inveon-Course-Management/blob/master/photos/dark.png)  | ![coursedetail.png](https://github.com/zeynepcircir/Inveon-Course-Management/blob/master/photos/coursedetail.png)  |
 
-| Bookmark All | Cart | Course Detail |
+| Cart Screen | Add Course Screen | About Screen |
 | --- | --- | --- |
 | ![cart.png](https://github.com/zeynepcircir/Inveon-Course-Management/blob/master/photos/cart.png) | ![addcourse.png](https://github.com/zeynepcircir/Inveon-Course-Management/blob/master/photos/addcourse.png) | ![about.png](https://github.com/zeynepcircir/Inveon-Course-Management/blob/master/photos/about.png) |
 
